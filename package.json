@@ -1,0 +1,56 @@
+{
+  "name": "tsquery",
+  "version": "0.1.0",
+  "description": "esquery for TypeScript!",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
+  "author": "Craig Spence <craigspence0@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "compile": "tsc",
+    "lint": "npm run lint:src && npm run lint:test",
+    "lint:src": "tslint --project ./tsconfig.json -c ./tslint.json 'src/**/*.ts'",
+    "lint:test": "tslint --project ./tsconfig.json -c ./tslint.json 'test/**/*.ts'",
+    "lint:fix": "npm run lint:src:fix && npm run lint:test",
+    "lint:src:fix": "tslint -c tslint.json 'src/**/*.ts' --fix",
+    "lint:test:fix": "tslint -c tslint.json 'test/**/*.ts' --fix",
+    "test": "jest",
+    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
+    "build": "npm run compile && npm run lint && npm run test",
+    "prepublishOnly": "rm -rf dist && npm run build:ci"
+  },
+  "dependencies": {
+    "esquery": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/jasmine": "^2.8.6",
+    "@types/node": "^9.4.7",
+    "@types/sinon": "^4.3.0",
+    "@types/sinon-chai": "^2.7.29",
+    "chai": "^4.1.2",
+    "jest": "^22.4.2",
+    "sinon": "^4.4.3",
+    "sinon-chai": "^3.0.0",
+    "ts-jest": "^22.4.1",
+    "ts-node": "^5.0.1",
+    "tslint": "^5.6.0",
+    "typescript": "^2"
+  },
+  "jest": {
+    "globals": {
+      "__TS_CONFIG__": "tsconfig.json"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": ["<rootDir>/src/**"],
+    "coverageDirectory": "<rootDir>/reports/coverage",
+    "transform": {
+      "\\.(ts)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "/test/.*\\.spec\\.ts$"
+  }
+}

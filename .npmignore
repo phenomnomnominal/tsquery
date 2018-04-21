@@ -1,0 +1,6 @@
+.nyc_output/
+coverage/
+dist/test/
+test/
+.DS_Store
+tsconfig.json
