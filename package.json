@@ -1,7 +1,7 @@
 {
-  "name": "tsquery",
-  "version": "0.1.0",
-  "description": "esquery for TypeScript!",
+  "name": "@phenomnomnominal/tsquery",
+  "version": "0.1.0-beta",
+  "description": "Query TypeScript ASTs with the esquery!",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "author": "Craig Spence <craigspence0@gmail.com>",
@@ -17,7 +17,7 @@
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "build": "npm run compile && npm run lint && npm run test",
-    "prepublishOnly": "rm -rf dist && npm run build:ci"
+    "prepublishOnly": "rm -rf dist && npm run build"
   },
   "dependencies": {
     "esquery": "^1.0.1"

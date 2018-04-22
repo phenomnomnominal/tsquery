@@ -1,15 +1,16 @@
-engines:
-  fixme:
+version: "2"
+plugins:
+  duplication:
     enabled: true
+    exclude_patterns:
+    - "**/*.spec.ts"
+    config:
+      languages:
+      - typescript
   tslint:
     enabled: true
-    channel: beta
     config: tslint.json
-ratings:
-  paths:
-  - "**.js"
-  - "**.ts"
-exclude_paths:
-  - dist
-  - node_modules
-  - reports
+  fixme:
+    enabled: true
+  nodesecurity:
+    enabled: true

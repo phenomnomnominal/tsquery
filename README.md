@@ -1,6 +1,6 @@
 # TSQuery
 
-[![npm version](https://img.shields.io/npm/v/tsquery.svg)](https://img.shields.io/npm/v/tsquery.svg)
+[![npm version](https://img.shields.io/npm/v/@phenomnomnominal/tsquery.svg)](https://img.shields.io/npm/v/@phenomnomnominal/tsquery.svg)
 
 TSQuery is a port of the ESQuery API for TypeScript! Which allows you to query a TypeScript AST for patterns of syntax using a CSS style selector system. Check out the ESQuery demo (note that the demo requires JavaScript code, not TypeScript):
 
@@ -9,7 +9,7 @@ TSQuery is a port of the ESQuery API for TypeScript! Which allows you to query a
 # Installation:
 
 ```
-npm install tsquery --save-dev
+npm install @phenomnomnominal/tsquery --save-dev
 ```
 
 # Examples:
@@ -20,7 +20,7 @@ We would do something like the following:
 
 ```
 
-import { tsquery } from 'tsquery';
+import { tsquery } from '@phenomnomnominal/tsquery';
 
 const typescript = `
 
