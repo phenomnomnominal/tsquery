@@ -14,7 +14,7 @@ import { conditional } from './fixtures';
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - compound:', () => {
+    describe('tsquery - compound:', () => {
         it('should find any nodes with two attributes', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, '[left.text="x"][right.text="1"]');

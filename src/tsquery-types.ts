@@ -29,6 +29,7 @@ export type TSQuerySelectorNode = {
     index: TSQuerySelectorNode;
     left: TSQuerySelectorNode;
     name: string;
+    operator: '=' | '!=' | '<=' | '<' | '>=' | '>';
     right: TSQuerySelectorNode;
     selectors: Array<TSQuerySelectorNode>;
     subject: boolean;

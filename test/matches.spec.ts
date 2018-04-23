@@ -14,7 +14,7 @@ import { conditional, forLoop, simpleFunction, simpleProgram } from './fixtures'
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - matches:', () => {
+    describe('tsquery - matches:', () => {
         it('should find any nodes that match a SyntaxKind', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, ':matches(IfStatement)');

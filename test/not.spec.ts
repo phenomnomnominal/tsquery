@@ -14,7 +14,7 @@ import { conditional, forLoop, simpleFunction, simpleProgram, statement } from '
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - :not:', () => {
+    describe('tsquery - :not:', () => {
         it('should find any nodes that are not a specific SyntaxKind', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, ':not(Identifier)');

@@ -14,7 +14,7 @@ import { conditional } from './fixtures';
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - identifier:', () => {
+    describe('tsquery - identifier:', () => {
         it('should find any nodes of a specific SyntaxKind', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, 'Identifier');

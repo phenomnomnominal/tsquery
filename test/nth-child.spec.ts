@@ -14,7 +14,7 @@ import { conditional } from './fixtures';
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - nth-child:', () => {
+    describe('tsquery - nth-child:', () => {
         it('should find any nodes that are the first-child of a list of nodes', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, ':first-child');

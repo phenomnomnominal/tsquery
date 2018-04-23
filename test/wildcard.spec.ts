@@ -14,7 +14,7 @@ import { conditional, forLoop, simpleFunction, simpleProgram, statement } from '
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - wildcard:', () => {
+    describe('tsquery - wildcard:', () => {
         it('should find all nodes (conditional)', () => {
             const result = tsquery(tsquery.ast(conditional), '*');
 

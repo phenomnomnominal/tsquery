@@ -14,7 +14,7 @@ import { conditional } from './fixtures';
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - :has:', () => {
+    describe('tsquery - :has:', () => {
         it('should find any nodes with multiple attributes', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, 'ExpressionStatement:has([name="foo"][kindName="Identifier"])');

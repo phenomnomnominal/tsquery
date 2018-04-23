@@ -14,7 +14,7 @@ import { conditional, simpleProgram } from './fixtures';
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
-    describe('tsquery.query - field:', () => {
+    describe('tsquery - field:', () => {
         it('should find any nodes with a single field', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, '.expression');
