@@ -8,7 +8,7 @@ chai.use(sinonChai);
 
 // Dependencies:
 import { BinaryExpression, Block, ExpressionStatement, FunctionDeclaration, IfStatement, VariableDeclaration, VariableStatement } from 'typescript';
-import { conditional, simpleFunction } from './fixtures';
+import { conditional, simpleFunction, simpleProgram } from './fixtures';
 
 // Under test:
 import { tsquery } from '../src/index';
@@ -75,6 +75,42 @@ describe('tsquery:', () => {
 
             expect(result).to.deep.equal([
                 (ast.statements[0] as FunctionDeclaration).name
+            ]);
+        });
+
+        it('should find any nodes with an attribute with a value that is greater than or equal to a value', () => {
+            const ast = tsquery.ast(simpleProgram);
+            const result = tsquery(ast, '[statements.length>=4]');
+
+            expect(result).to.deep.equal([
+                ast
+            ]);
+        });
+
+        it('should find any nodes with an attribute with a value that is greater than a value', () => {
+            const ast = tsquery.ast(simpleProgram);
+            const result = tsquery(ast, '[statements.length>3]');
+
+            expect(result).to.deep.equal([
+                ast
+            ]);
+        });
+
+        it('should find any nodes with an attribute with a value that is less than or equal to a value', () => {
+            const ast = tsquery.ast(simpleProgram);
+            const result = tsquery(ast, '[statements.length<=1]');
+
+            expect(result).to.deep.equal([
+                (ast.statements[3] as IfStatement).thenStatement
+            ]);
+        });
+
+        it('should find any nodes with an attribute with a value that is less than a value', () => {
+            const ast = tsquery.ast(simpleProgram);
+            const result = tsquery(ast, '[statements.length<2]');
+
+            expect(result).to.deep.equal([
+                (ast.statements[3] as IfStatement).thenStatement
             ]);
         });
     });

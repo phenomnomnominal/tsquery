@@ -3,7 +3,7 @@ import { TSQueryNode, TSQuerySelectorNode } from '../tsquery-types';
 import { getPath } from '../utils';
 
 // Constants:
-const OPERATOR: { [key: string]: (obj: any, type: string, value: any) => boolean } = {
+const OPERATOR: { [key: string]: (obj: any, value: any, type: string) => boolean } = {
     '=': equal,
     '!=': notEqual,
     '<=': lessThanEqual,
@@ -30,12 +30,12 @@ export function attribute (node: TSQueryNode, selector: TSQuerySelectorNode): bo
 
     const matcher = OPERATOR[operator];
     if (matcher) {
-        return matcher(obj, type, value);
+        return matcher(obj, value, type);
     }
     return false;
 }
 
-function equal (obj: any, type: string, value: any): boolean {
+function equal (obj: any, value: any, type: string): boolean {
     switch (type) {
         case 'regexp': return typeof obj === 'string' && (value as RegExp).test(obj);
         case 'literal': return `${value}` === `${obj}`;
@@ -44,7 +44,7 @@ function equal (obj: any, type: string, value: any): boolean {
     return false;
 }
 
-function notEqual (obj: any, type: string, value: any): boolean {
+function notEqual (obj: any, value: any, type: string): boolean {
     switch (type) {
         case 'regexp': return typeof obj === 'string' && !(value as RegExp).test(obj);
         case 'literal': return `${value}` !== `${obj}`;
