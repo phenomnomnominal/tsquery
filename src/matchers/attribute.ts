@@ -1,9 +1,9 @@
 // Dependencies:
-import { TSQueryNode, TSQuerySelectorNode } from '../tsquery-types';
+import { TSQueryAttributeOperators, TSQueryAttributeOperatorType, TSQueryNode, TSQuerySelectorNode } from '../tsquery-types';
 import { getPath } from '../utils';
 
 // Constants:
-const OPERATOR: { [key: string]: (obj: any, value: any, type: string) => boolean } = {
+const OPERATOR: TSQueryAttributeOperators = {
     '=': equal,
     '!=': notEqual,
     '<=': lessThanEqual,
@@ -35,22 +35,20 @@ export function attribute (node: TSQueryNode, selector: TSQuerySelectorNode): bo
     return false;
 }
 
-function equal (obj: any, value: any, type: string): boolean {
+function equal (obj: any, value: any, type: TSQueryAttributeOperatorType): boolean {
     switch (type) {
         case 'regexp': return typeof obj === 'string' && (value as RegExp).test(obj);
         case 'literal': return `${value}` === `${obj}`;
         case 'type': return value === typeof obj;
     }
-    return false;
 }
 
-function notEqual (obj: any, value: any, type: string): boolean {
+function notEqual (obj: any, value: any, type: TSQueryAttributeOperatorType): boolean {
     switch (type) {
         case 'regexp': return typeof obj === 'string' && !(value as RegExp).test(obj);
         case 'literal': return `${value}` !== `${obj}`;
         case 'type': return value !== typeof obj;
     }
-    return false;
 }
 
 function lessThanEqual (obj: any, value: any): boolean {

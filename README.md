@@ -64,5 +64,5 @@ The following selectors are supported:
 * [adjacent sibling](http://dev.w3.org/csswg/selectors4/#adjacent-sibling-combinators): `node + adjacent`
 * [negation](http://dev.w3.org/csswg/selectors4/#negation-pseudo): `:not(ForStatement)`
 * [matches-any](http://dev.w3.org/csswg/selectors4/#matches): `:matches([attr] > :first-child, :last-child)`
-* [subject indicator](http://dev.w3.org/csswg/selectors4/#subject): `!IfStatement > [name="foo"]`
+* [has](https://drafts.csswg.org/selectors-4/#has-pseudo): `IfStatement:has([name="foo"])`
 * class of AST node: `:statement`, `:expression`, `:declaration`, `:function`, or `:pattern`

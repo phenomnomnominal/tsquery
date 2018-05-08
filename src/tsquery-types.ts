@@ -10,18 +10,27 @@ export type TSQueryApi = {
    query (ast: SourceFile, selector: string): Array<TSQueryNode>;
 };
 
+export type TSQueryAttributeOperatorType = 'regexp' | 'literal' | 'type';
+export type TSQueryAttributeOperator = (obj: any, value: any, type: TSQueryAttributeOperatorType) => boolean;
+export type TSQueryAttributeOperators = {
+    [key: string]: TSQueryAttributeOperator
+};
+
 export type TSQueryMatcher = (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>) => boolean;
 export type TSQueryMatchers = {
     [key: string]: TSQueryMatcher;
 };
 
-export type TSQueryNode = Node & {
+export type TSQueryNode<T extends Node = Node> = T & {
     // We convert the `kind` property to its string name from the `SyntaxKind` enum:
+    // Some nodes have more that one applicable `SyntaxKind`...
     kindName: string;
     // We add a "name" property to `Node`s with `type` `SyntaxKind.Identifier`:
     name?: string;
     // We automatically call `getText()` so it can be selected on:
     text: string;
+    // We parse the `text` to a `value` for all Literals:
+    value?: any;
 };
 
 export type TSQuerySelectorNode = {
@@ -33,7 +42,7 @@ export type TSQuerySelectorNode = {
     right: TSQuerySelectorNode;
     selectors: Array<TSQuerySelectorNode>;
     subject: boolean;
-    type: string;
+    type: TSQueryAttributeOperatorType;
     value: TSQuerySelectorNode | RegExp | number | string;
 };
 

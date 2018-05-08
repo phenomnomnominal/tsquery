@@ -7,7 +7,7 @@ const { expect } = chai;
 chai.use(sinonChai);
 
 // Dependencies:
-import { BinaryExpression, Block, ExpressionStatement, FunctionDeclaration, IfStatement, VariableDeclaration, VariableStatement } from 'typescript';
+import { BinaryExpression, Block, CallExpression, ExpressionStatement, FunctionDeclaration, IfStatement, VariableDeclaration, VariableStatement } from 'typescript';
 import { conditional, simpleFunction, simpleProgram } from './fixtures';
 
 // Under test:
@@ -15,7 +15,7 @@ import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
     describe('tsquery - attribute:', () => {
-        it('should find any nodes with a property with a specific value', () => {
+        it('should find any nodes with a property with a value that matches a specific value', () => {
             const ast = tsquery.ast(conditional);
             const result = tsquery(ast, '[name="x"]');
 
@@ -24,6 +24,17 @@ describe('tsquery:', () => {
                 ((((ast.statements[0] as IfStatement).elseStatement as Block).statements[0] as ExpressionStatement).expression as BinaryExpression).left,
                 ((((ast.statements[1] as IfStatement).expression as BinaryExpression).left as BinaryExpression).left as BinaryExpression).left,
                 ((ast.statements[1] as IfStatement).expression as BinaryExpression).right
+            ]);
+        });
+
+        it('should find any nodes with a property with a value that does not match a specific value', () => {
+            const ast = tsquery.ast(conditional);
+            const result = tsquery(ast, '[name!="x"]');
+
+            expect(result).to.deep.equal([
+                ((((ast.statements[0] as IfStatement).thenStatement as Block).statements[0] as ExpressionStatement).expression as CallExpression).expression,
+                ((((ast.statements[1] as IfStatement).thenStatement as Block).statements[0] as ExpressionStatement).expression as BinaryExpression).left,
+                (((((ast.statements[1] as IfStatement).elseStatement as IfStatement).thenStatement as Block).statements[0] as ExpressionStatement).expression as BinaryExpression).left
             ]);
         });
 
@@ -105,13 +116,26 @@ describe('tsquery:', () => {
             ]);
         });
 
-        it('should find any nodes with an attribute with a value that is less than a value', () => {
-            const ast = tsquery.ast(simpleProgram);
-            const result = tsquery(ast, '[statements.length<2]');
+        it('should find any nodes with an attribute with a value that is a specific type', () => {
+            const ast = tsquery.ast(conditional);
+            const result = tsquery(ast, '[value=type(boolean)]');
 
             expect(result).to.deep.equal([
-                (ast.statements[3] as IfStatement).thenStatement
+                (((ast.statements[1] as IfStatement).expression as BinaryExpression).left as BinaryExpression).right,
+                ((ast.statements[1] as IfStatement).elseStatement as IfStatement).expression
             ]);
+            expect(result.every(node => typeof node.value === 'boolean')).to.equal(true);
+        });
+
+        it('should find any nodes with an attribute with a value that is not a specific type', () => {
+            const ast = tsquery.ast(simpleProgram);
+            const result = tsquery(ast, '[value!=type(string)]');
+
+            expect(result).to.deep.equal([
+                (ast.statements[0] as VariableStatement).declarationList.declarations[0].initializer,
+                (((ast.statements[2] as ExpressionStatement).expression as BinaryExpression).right as BinaryExpression).right
+            ]);
+            expect(result.every(node => typeof node.value !== 'string')).to.equal(true);
         });
     });
 });
