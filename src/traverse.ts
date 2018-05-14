@@ -1,5 +1,5 @@
 // Dependencies:
-import { SourceFile, SyntaxKind } from 'typescript';
+import { Node, SourceFile, SyntaxKind } from 'typescript';
 import { TSQueryNode, TSQueryTraverseOptions } from './tsquery-types';
 
 // Constants:
@@ -15,14 +15,14 @@ const LITERAL_KINDS: Array<SyntaxKind> = [
     SyntaxKind.TrueKeyword
 ];
 
-export function traverse (node: SourceFile | TSQueryNode, options: TSQueryTraverseOptions): void {
-    addProperties(node as TSQueryNode);
-    options.enter(node as TSQueryNode, node.parent as TSQueryNode || null);
-    node.forEachChild(child => traverse(child as TSQueryNode, options));
-    options.leave(node as TSQueryNode, node.parent as TSQueryNode || null);
+export function traverse<T extends Node = Node> (node: SourceFile | TSQueryNode<T>, options: TSQueryTraverseOptions<T>): void {
+    addProperties(node as TSQueryNode<T>);
+    options.enter(node as TSQueryNode<T>, node.parent as TSQueryNode<T> || null);
+    node.forEachChild(child => traverse(child as TSQueryNode<T>, options));
+    options.leave(node as TSQueryNode<T>, node.parent as TSQueryNode<T> || null);
 }
 
-export function getVisitorKeys (node: TSQueryNode | null): Array<string> {
+export function getVisitorKeys<T extends Node = Node> (node: TSQueryNode<T> | null): Array<string> {
     return !!node ? Object.keys(node)
     .filter(key => !FILTERED_KEYS.includes(key))
     .filter(key => {

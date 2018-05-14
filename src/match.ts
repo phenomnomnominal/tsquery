@@ -1,19 +1,19 @@
 // Dependencies:
-import { SourceFile } from 'typescript';
+import { Node, SourceFile } from 'typescript';
 import { MATCHERS } from './matchers';
 import { traverse } from './traverse';
 import { TSQueryNode, TSQuerySelectorNode } from './tsquery-types';
 
-export function match (ast: SourceFile, selector: TSQuerySelectorNode): Array<TSQueryNode> {
-    const ancestry: Array<TSQueryNode> = [];
-    const results: Array<TSQueryNode> = [];
+export function match<T extends Node = Node> (ast: SourceFile, selector: TSQuerySelectorNode): Array<TSQueryNode<T>> {
+    const ancestry: Array<TSQueryNode<T>> = [];
+    const results: Array<TSQueryNode<T>> = [];
     if (!selector) {
         return results;
     }
 
     const altSubjects = subjects(selector);
     traverse(ast, {
-        enter (node: TSQueryNode, parent: TSQueryNode | null): void {
+        enter (node: TSQueryNode<T>, parent: TSQueryNode<T> | null): void {
             if (parent != null) {
                 ancestry.unshift(parent);
             }
@@ -41,7 +41,7 @@ export function match (ast: SourceFile, selector: TSQuerySelectorNode): Array<TS
     return results;
 }
 
-export function findMatches (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode> = []): boolean {
+export function findMatches<T extends Node = Node> (node: TSQueryNode<T>, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode<T>> = []): boolean {
     if (!selector) {
         return true;
     }
@@ -57,7 +57,7 @@ export function findMatches (node: TSQueryNode, selector: TSQuerySelectorNode, a
     throw new Error(`Unknown selector type: ${selector.type}`);
 }
 
-function subjects (selector?: TSQuerySelectorNode, ancestor?: TSQueryNode | TSQuerySelectorNode): Array<any> {
+function subjects<T extends Node> (selector?: TSQuerySelectorNode, ancestor?: TSQueryNode<T> | TSQuerySelectorNode): Array<any> {
     if (selector == null || typeof selector !== 'object') {
         return [];
     }
