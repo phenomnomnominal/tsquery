@@ -2,12 +2,12 @@
 import { Node, SourceFile } from 'typescript';
 
 export type TSQueryApi = {
-   (ast: SourceFile, selector: string): Array<TSQueryNode>;
+   <T extends Node = Node>(ast: SourceFile, selector: string): Array<TSQueryNode<T>>;
    ast (text: string, fileName?: string): SourceFile;
-   match (ast: SourceFile, selector: TSQuerySelectorNode): Array<TSQueryNode>;
+   match<T extends Node = Node> (ast: SourceFile, selector: TSQuerySelectorNode): Array<TSQueryNode<T>>;
    matches (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>): boolean;
    parse (selector: string): TSQuerySelectorNode;
-   query (ast: SourceFile, selector: string): Array<TSQueryNode>;
+   query<T extends Node = Node> (ast: SourceFile, selector: string): Array<TSQueryNode<T>>;
 };
 
 export type TSQueryAttributeOperatorType = 'regexp' | 'literal' | 'type';
@@ -46,7 +46,7 @@ export type TSQuerySelectorNode = {
     value: TSQuerySelectorNode | RegExp | number | string;
 };
 
-export type TSQueryTraverseOptions = {
-    enter: (node: TSQueryNode, parent: TSQueryNode | null) => void;
-    leave: (node: TSQueryNode, parent: TSQueryNode | null) => void;
+export type TSQueryTraverseOptions<T extends Node> = {
+    enter: (node: TSQueryNode<T>, parent: TSQueryNode<T> | null) => void;
+    leave: (node: TSQueryNode<T>, parent: TSQueryNode<T> | null) => void;
 };
