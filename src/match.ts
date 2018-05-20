@@ -1,23 +1,23 @@
 // Dependencies:
-import { Node, SourceFile } from 'typescript';
+import { Node } from 'typescript';
 import { MATCHERS } from './matchers';
 import { traverse } from './traverse';
 import { TSQueryNode, TSQuerySelectorNode } from './tsquery-types';
 
-export function match<T extends Node = Node> (ast: SourceFile, selector: TSQuerySelectorNode): Array<TSQueryNode<T>> {
+export function match<T extends Node = Node> (node: Node | TSQueryNode<T>, selector: TSQuerySelectorNode): Array<TSQueryNode<T>> {
     const ancestry: Array<TSQueryNode<T>> = [];
     const results: Array<TSQueryNode<T>> = [];
     if (!selector) {
         return results;
     }
 
-    traverse(ast, {
-        enter (node: TSQueryNode<T>, parent: TSQueryNode<T> | null): void {
+    traverse(node, {
+        enter (child: TSQueryNode<T>, parent: TSQueryNode<T> | null): void {
             if (parent != null) {
                 ancestry.unshift(parent);
             }
-            if (findMatches(node, selector, ancestry)) {
-                results.push(node);
+            if (findMatches(child, selector, ancestry)) {
+                results.push(child);
             }
         },
         leave (): void {

@@ -1,5 +1,5 @@
 // Dependencies:
-import { Node, SourceFile, SyntaxKind } from 'typescript';
+import { Node, SyntaxKind } from 'typescript';
 import { TSQueryNode, TSQueryTraverseOptions } from './tsquery-types';
 
 // Constants:
@@ -15,7 +15,7 @@ const LITERAL_KINDS: Array<SyntaxKind> = [
     SyntaxKind.TrueKeyword
 ];
 
-export function traverse<T extends Node = Node> (node: SourceFile | TSQueryNode<T>, options: TSQueryTraverseOptions<T>): void {
+export function traverse<T extends Node = Node> (node: Node | TSQueryNode<T>, options: TSQueryTraverseOptions<T>): void {
     addProperties(node as TSQueryNode<T>);
     options.enter(node as TSQueryNode<T>, node.parent as TSQueryNode<T> || null);
     node.forEachChild(child => traverse(child as TSQueryNode<T>, options));

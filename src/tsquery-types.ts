@@ -2,12 +2,12 @@
 import { Node, SourceFile } from 'typescript';
 
 export type TSQueryApi = {
-   <T extends Node = Node>(ast: SourceFile, selector: string): Array<TSQueryNode<T>>;
+   <T extends Node = Node>(ast: Node | TSQueryNode<T>, selector: string): Array<TSQueryNode<T>>;
    ast (text: string, fileName?: string): SourceFile;
-   match<T extends Node = Node> (ast: SourceFile, selector: TSQuerySelectorNode): Array<TSQueryNode<T>>;
+   match<T extends Node = Node> (ast: Node | TSQueryNode<T>, selector: TSQuerySelectorNode): Array<TSQueryNode<T>>;
    matches (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>): boolean;
    parse (selector: string): TSQuerySelectorNode;
-   query<T extends Node = Node> (ast: SourceFile, selector: string): Array<TSQueryNode<T>>;
+   query<T extends Node = Node> (ast: Node | TSQueryNode<T>, selector: string): Array<TSQueryNode<T>>;
 };
 
 export type TSQueryAttributeOperatorType = 'regexp' | 'literal' | 'type';
