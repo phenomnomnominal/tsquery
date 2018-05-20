@@ -7,7 +7,7 @@ const { expect } = chai;
 chai.use(sinonChai);
 
 // Dependencies:
-import { SyntaxKind, VariableDeclaration, VariableDeclarationList, VariableStatement } from 'typescript';
+import { Node, SyntaxKind, VariableDeclaration, VariableDeclarationList, VariableStatement } from 'typescript';
 import { conditional, forLoop, simpleFunction, simpleProgram, statement } from './fixtures';
 
 // Under test:
@@ -17,7 +17,7 @@ describe('tsquery:', () => {
     describe('tsquery - :not:', () => {
         it('should find any nodes that are not a specific SyntaxKind', () => {
             const ast = tsquery.ast(conditional);
-            const result = tsquery(ast, ':not(Identifier)');
+            const result = tsquery<Node>(ast, ':not(Identifier)');
 
             expect(result.length).to.equal(36);
             expect(result.every(node => node.kind !== SyntaxKind.Identifier)).to.equal(true);
@@ -39,7 +39,7 @@ describe('tsquery:', () => {
 
         it('should find any notes that are not one of several SyntaxKind', () => {
             const ast = tsquery.ast(simpleProgram);
-            const result = tsquery(ast, ':not(Identifier, IfStatement)');
+            const result = tsquery<Node>(ast, ':not(Identifier, IfStatement)');
 
             expect(result.length).to.equal(21);
             expect(result.every(node => {

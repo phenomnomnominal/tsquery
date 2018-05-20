@@ -7,7 +7,7 @@ const { expect } = chai;
 chai.use(sinonChai);
 
 // Dependencies:
-import { SyntaxKind } from 'typescript';
+import { Identifier, SyntaxKind } from 'typescript';
 import { conditional } from './fixtures';
 
 // Under test:
@@ -17,7 +17,7 @@ describe('tsquery:', () => {
     describe('tsquery - child:', () => {
         it('should find any nodes that are a direct child of another node', () => {
             const ast = tsquery.ast(conditional);
-            const result = tsquery(ast, 'BinaryExpression > Identifier');
+            const result = tsquery<Identifier>(ast, 'BinaryExpression > Identifier');
 
             expect(result.every(node => {
                 return node.kind === SyntaxKind.Identifier &&
@@ -27,7 +27,7 @@ describe('tsquery:', () => {
 
         it('should find any nodes that are a direct child of another node which is the direct child of another node', () => {
             const ast = tsquery.ast(conditional);
-            const result = tsquery(ast, 'IfStatement > BinaryExpression > Identifier');
+            const result = tsquery<Identifier>(ast, 'IfStatement > BinaryExpression > Identifier');
 
             expect(result.every(node => {
                 return node.kind === SyntaxKind.Identifier &&
