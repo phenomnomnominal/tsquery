@@ -1,6 +1,8 @@
 # TSQuery
 
 [![npm version](https://img.shields.io/npm/v/@phenomnomnominal/tsquery.svg)](https://img.shields.io/npm/v/@phenomnomnominal/tsquery.svg)
+[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tsquery/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tsquery)
+[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tsquery/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tsquery/coverage)
 
 TSQuery is a port of the ESQuery API for TypeScript! Which allows you to query a TypeScript AST for patterns of syntax using a CSS style selector system. Check out the ESQuery demo (note that the demo requires JavaScript code, not TypeScript):
 
@@ -45,6 +47,8 @@ const ast = tsquery.ast(typescript);
 const nodes = tsquery(ast, 'Identifier[name="Animal"]');
 console.log(nodes.length); // 2
 ```
+
+# Selectors:
 
 The following selectors are supported:
 * AST node type: `ForStatement`
