@@ -25,5 +25,15 @@ describe('tsquery:', () => {
                 ((ast.statements[0] as FunctionDeclaration).body as Block).statements[2]
             ]);
         });
+
+        it('should work on malformed ASTs', () => {
+            const ast = tsquery.ast('function () {}');
+
+            const result = tsquery(ast, 'FunctionDeclaration');
+
+            expect(result).to.deep.equal([
+                (ast.statements[0])
+            ]);
+        });
     });
 });

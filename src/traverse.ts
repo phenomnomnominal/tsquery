@@ -32,19 +32,19 @@ export function getVisitorKeys<T extends Node = Node> (node: TSQueryNode<T> | nu
 }
 
 export function addProperties (node: TSQueryNode): void {
-    if (!node.kindName) {
+    if (isNotSet(node, 'kindName')) {
         node.kindName = SyntaxKind[node.kind];
     }
 
-    if (!node.text) {
+    if (isNotSet(node, 'text')) {
         node.text = node.getText();
     }
 
-    if (node.kind === SyntaxKind.Identifier && !node.name) {
+    if (node.kind === SyntaxKind.Identifier && isNotSet(node, 'name')) {
         node.name = node.text;
     }
 
-    if (!node.value && LITERAL_KINDS.includes(node.kind)) {
+    if (isNotSet(node, 'value') && LITERAL_KINDS.includes(node.kind)) {
         node.value = parseType(node);
     }
 }
@@ -66,4 +66,8 @@ export function parseType (node: TSQueryNode): any {
         return new RegExp(node.text);
     }
     return node.text;
+}
+
+function isNotSet (object: any, property: string): boolean {
+    return object[property] == null;
 }
