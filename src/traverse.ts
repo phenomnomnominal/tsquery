@@ -51,7 +51,7 @@ export function addProperties (node: TSQueryNode): void {
 
 export function parseType (node: TSQueryNode): any {
     // String:
-    if (node.kind === SyntaxKind.StringLiteral) {
+    if ([SyntaxKind.StringLiteral, SyntaxKind.NoSubstitutionTemplateLiteral].indexOf(node.kind) >= 0) {
         return node.text;
     }
 
