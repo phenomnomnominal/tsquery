@@ -5,6 +5,10 @@
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "author": "Craig Spence <craigspence0@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phenomnomnominal/tsquery"
+  },
   "license": "MIT",
   "scripts": {
     "compile": "tsc",
