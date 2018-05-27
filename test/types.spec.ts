@@ -33,6 +33,7 @@ describe('tsquery:', () => {
         it('should not try to cast a RegExp from inside a Template Literal', () => {
             const ast = tsquery.ast('`/fo(o/`;');
             const [result] = tsquery(ast, 'FirstTemplateToken');
+
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
             expect(result.value).to.equal('/fo(o/');
         });
@@ -40,6 +41,7 @@ describe('tsquery:', () => {
         it('should not try to cast a RegExp from inside a Tagged Template Literal', () => {
             const ast = tsquery.ast('tag`/fo(o/`;');
             const [result] = tsquery<TaggedTemplateExpression>(ast, 'TaggedTemplateExpression');
+
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
             expect((result.template as NoSubstitutionTemplateLiteral).text).to.equal('/fo(o/');
         });
