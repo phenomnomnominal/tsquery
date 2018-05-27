@@ -50,21 +50,35 @@ export function addProperties (node: TSQueryNode): void {
 }
 
 export function parseType (node: TSQueryNode): any {
+    // String:
+    if (node.kind === SyntaxKind.StringLiteral) {
+        return node.text;
+    }
+
+    // Boolean:
     if (node.text === 'true') {
         return true;
     }
     if (node.text === 'false') {
         return false;
     }
+
+    // Null:
     if (node.text === 'null') {
         return null;
     }
-    if (!isNaN(+node.text)) {
-        return +node.text;
+
+    // Number:
+    const maybeNumber = +node.text;
+    if (!isNaN(maybeNumber)) {
+        return maybeNumber;
     }
+
+    // RegExp:
     if (node.text.startsWith('/') && node.text.endsWith('/')) {
         return new RegExp(node.text);
     }
+
     return node.text;
 }
 
