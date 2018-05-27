@@ -7,7 +7,7 @@ const { expect } = chai;
 chai.use(sinonChai);
 
 // Dependencies:
-import { ExpressionStatement } from 'typescript';
+import { ExpressionStatement, NoSubstitutionTemplateLiteral, TaggedTemplateExpression } from 'typescript';
 
 // Under test:
 import { tsquery } from '../src/index';
@@ -28,6 +28,20 @@ describe('tsquery:', () => {
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
             expect(result.value).to.equal('/t(/');
+        });
+
+        it('should not try to cast a RegExp from inside a Template Literal', () => {
+            const ast = tsquery.ast('`/fo(o/`;');
+            const [result] = tsquery(ast, 'FirstTemplateToken');
+            expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
+            expect(result.value).to.equal('/fo(o/');
+        });
+
+        it('should not try to cast a RegExp from inside a Tagged Template Literal', () => {
+            const ast = tsquery.ast('tag`/fo(o/`;');
+            const [result] = tsquery<TaggedTemplateExpression>(ast, 'TaggedTemplateExpression');
+            expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
+            expect((result.template as NoSubstitutionTemplateLiteral).text).to.equal('/fo(o/');
         });
 
         it('should correctly cast a boolean false', () => {
