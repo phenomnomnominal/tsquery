@@ -20,8 +20,7 @@ Say we want to select all instances of an identifier with name "Animal", e.g. th
 
 We would do something like the following:
 
-```
-
+```ts
 import { tsquery } from '@phenomnomnominal/tsquery';
 
 const typescript = `
