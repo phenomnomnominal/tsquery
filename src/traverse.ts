@@ -14,13 +14,13 @@ const LITERAL_KINDS: Array<SyntaxKind> = [
     SyntaxKind.TrueKeyword
 ];
 const PARSERS: { [key: number]: (node: TSQueryNode) => any } = {
-    [SyntaxKind.FalseKeyword as number]: parseBooleanFalse,
-    [SyntaxKind.NoSubstitutionTemplateLiteral as number]: parseString,
-    [SyntaxKind.NullKeyword as number]: parseNull,
-    [SyntaxKind.NumericLiteral as number]: parseNumber,
-    [SyntaxKind.RegularExpressionLiteral as number]: parseRegExp,
-    [SyntaxKind.StringLiteral as number]: parseString,
-    [SyntaxKind.TrueKeyword as number]: parseBooleanTrue
+    [SyntaxKind.FalseKeyword]: () => false,
+    [SyntaxKind.NoSubstitutionTemplateLiteral]: (node: TSQueryNode) => node.text,
+    [SyntaxKind.NullKeyword]: () => null,
+    [SyntaxKind.NumericLiteral]: (node: TSQueryNode) => +node.text,
+    [SyntaxKind.RegularExpressionLiteral]: (node: TSQueryNode) => new RegExp(node.text),
+    [SyntaxKind.StringLiteral]: (node: TSQueryNode) => node.text,
+    [SyntaxKind.TrueKeyword]: () => true
 };
 
 export function traverse<T extends Node = Node> (node: Node | TSQueryNode<T>, options: TSQueryTraverseOptions<T>): void {
@@ -59,28 +59,4 @@ export function addProperties (node: TSQueryNode): void {
 
 function isNotSet (object: any, property: string): boolean {
     return object[property] == null;
-}
-
-function parseString (node: TSQueryNode): string {
-    return node.text;
-}
-
-function parseBooleanFalse (_: TSQueryNode): boolean {
-    return false;
-}
-
-function parseBooleanTrue (_: TSQueryNode): boolean {
-    return true;
-}
-
-function parseNull (_: TSQueryNode): null {
-    return null;
-}
-
-function parseNumber (node: TSQueryNode): number {
-    return +node.text;
-}
-
-function parseRegExp (node: TSQueryNode): RegExp {
-    return new RegExp(node.text);
 }
