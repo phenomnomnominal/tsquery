@@ -4,9 +4,12 @@
 [![Code Climate](https://codeclimate.com/github/phenomnomnominal/tsquery/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tsquery)
 [![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tsquery/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tsquery/coverage)
 
-TSQuery is a port of the ESQuery API for TypeScript! Which allows you to query a TypeScript AST for patterns of syntax using a CSS style selector system. Check out the ESQuery demo (note that the demo requires JavaScript code, not TypeScript):
+TSQuery is a port of the ESQuery API for TypeScript! Which allows you to query a TypeScript AST for patterns of syntax using a CSS style selector system. 
 
-[demo](https://estools.github.io/esquery/)
+[Check out the ESQuery demo](https://estools.github.io/esquery/) - note that the demo requires JavaScript code, not TypeScript
+
+[You can also check out the TSQuery demo](https://tsquery-playground.stackblitz.io) - Lovingly crafted by [Uri Shaked]( https://github.com/urish)
+
 
 # Installation:
 
