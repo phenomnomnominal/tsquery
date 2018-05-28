@@ -47,6 +47,8 @@ const nodes = tsquery(ast, 'Identifier[name="Animal"]');
 console.log(nodes.length); // 2
 ```
 
+[Try running this code in StackBlitz](https://stackblitz.com/edit/tsquery-examples)!
+
 # Selectors:
 
 The following selectors are supported:
