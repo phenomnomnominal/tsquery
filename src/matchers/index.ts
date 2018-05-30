@@ -6,7 +6,6 @@ import { adjacent } from './adjacent';
 import { attribute } from './attribute';
 import { child } from './child';
 import { classs } from './class';
-import { compound } from './compound';
 import { descendant } from './descendant';
 import { field } from './field';
 import { has } from './has';
@@ -21,7 +20,7 @@ export const MATCHERS: TSQueryMatchers = {
     adjacent,
     attribute,
     child,
-    compound,
+    compound: matches('every'),
     'class': classs,
     descendant,
     field,
@@ -29,7 +28,7 @@ export const MATCHERS: TSQueryMatchers = {
     'nth-last-child': nthLastChild,
     has,
     identifier,
-    matches,
+    matches: matches('some'),
     not,
     sibling,
     wildcard
