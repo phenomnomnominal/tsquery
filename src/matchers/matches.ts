@@ -7,5 +7,5 @@ export function matches (modifier: 'some' | 'every'): (node: TSQueryNode, select
         return selector.selectors[modifier](childSelector => {
             return findMatches(node, childSelector, ancestry);
         });
-    }
+    };
 }
