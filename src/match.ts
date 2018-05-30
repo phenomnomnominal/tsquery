@@ -1,33 +1,25 @@
 // Dependencies:
 import { Node } from 'typescript';
 import { MATCHERS } from './matchers';
-import { traverse } from './traverse';
+import { traverseChildren } from './traverse';
 import { TSQueryNode, TSQuerySelectorNode } from './tsquery-types';
 
 export function match<T extends Node = Node> (node: Node | TSQueryNode<T>, selector: TSQuerySelectorNode): Array<TSQueryNode<T>> {
-    const ancestry: Array<TSQueryNode<T>> = [];
     const results: Array<TSQueryNode<T>> = [];
     if (!selector) {
         return results;
     }
 
-    traverse(node, {
-        enter (child: TSQueryNode<T>, parent: TSQueryNode<T> | null): void {
-            if (parent != null) {
-                ancestry.unshift(parent);
-            }
-            if (findMatches(child, selector, ancestry)) {
-                results.push(child);
-            }
-        },
-        leave (): void {
-            ancestry.shift();
+    traverseChildren(node, (childNode: TSQueryNode, ancestry: Array<TSQueryNode>) => {
+        if (findMatches(childNode, selector, ancestry)) {
+            results.push(childNode as TSQueryNode<T>);
         }
     });
+
     return results;
 }
 
-export function findMatches<T extends Node = Node> (node: TSQueryNode<T>, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode<T>> = []): boolean {
+export function findMatches (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode> = []): boolean {
     if (!selector) {
         return true;
     }
