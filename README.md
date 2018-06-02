@@ -55,7 +55,7 @@ console.log(nodes.length); // 2
 # Selectors:
 
 The following selectors are supported:
-* AST node type: `ForStatement`
+* AST node type: `ForStatement` (see [common node types](#common-ast-node-types))
 * [wildcard](http://dev.w3.org/csswg/selectors4/#universal-selector): `*`
 * [attribute existence](http://dev.w3.org/csswg/selectors4/#attribute-selectors): `[attr]`
 * [attribute value](http://dev.w3.org/csswg/selectors4/#attribute-selectors): `[attr="foo"]` or `[attr=123]`
@@ -74,3 +74,16 @@ The following selectors are supported:
 * [matches-any](http://dev.w3.org/csswg/selectors4/#matches): `:matches([attr] > :first-child, :last-child)`
 * [has](https://drafts.csswg.org/selectors-4/#has-pseudo): `IfStatement:has([name="foo"])`
 * class of AST node: `:statement`, `:expression`, `:declaration`, `:function`, or `:pattern`
+
+### Common AST node types:
+
+* `Identifier` - any identifier (name of a function, class, variable, etc)
+* `IfStatement`, `ForStatement`, `WhileStatement`, `DoStatement` - control flow
+* `FunctionDeclaration`, `ClassDeclaration`, `ArrowFunction` - declarations
+* `VariableStatement` - var, const, let.
+* `ImportDeclaration` - any `import` statement
+* `StringLiteral` - any string
+* `TrueKeyword`, `FalseKeyword`, `NullKeyword`, `AnyKeyword` - various keywords
+* `CallExpression` - function call
+* `FirstLiteralToken` - any numeric constant
+* `FirstTemplateToken`, `TemplateExpression` - template strings and expressions
