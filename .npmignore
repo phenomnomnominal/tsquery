@@ -2,6 +2,11 @@
 coverage/
 dist/test/
 examples/
+reports/
 test/
-.DS_Store
 tsconfig.json
+tslint.json
+wallaby.js
+.DS_Store
+.codeclimate.yml
+.travis.yml
