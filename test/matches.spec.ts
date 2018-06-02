@@ -1,10 +1,5 @@
 // Test Utilities:
-import * as chai from 'chai';
-import * as sinonChai from 'sinon-chai';
-
-// Test setup:
-const { expect } = chai;
-chai.use(sinonChai);
+import { expect } from './index';
 
 // Dependencies:
 import { BinaryExpression, Block, ExpressionStatement, ForStatement, FunctionDeclaration, IfStatement } from 'typescript';
@@ -49,7 +44,7 @@ describe('tsquery:', () => {
 
         it('should find any nodes that implicitly match one of several SyntaxKinds', () => {
             const ast = tsquery.ast(simpleProgram);
-            const result = tsquery(ast, 'BinaryExpression, NonExistant, VariableStatement');
+            const result = tsquery(ast, 'BinaryExpression, VariableStatement');
 
             expect(result).to.deep.equal([
                 ast.statements[0],

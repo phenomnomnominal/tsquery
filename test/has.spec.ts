@@ -1,10 +1,5 @@
 // Test Utilities:
-import * as chai from 'chai';
-import * as sinonChai from 'sinon-chai';
-
-// Test setup:
-const { expect } = chai;
-chai.use(sinonChai);
+import { expect } from './index';
 
 // Dependencies:
 import { BinaryExpression, Block, IfStatement } from 'typescript';
@@ -45,11 +40,11 @@ describe('tsquery:', () => {
             ]);
         });
 
-        xit('should handle nested :has selectors', () => {
+        it('should handle nested :has selectors', () => {
             const ast = tsquery.ast(conditional);
-            const result = tsquery(ast, 'Program:has(IfStatement:has(Literal[value=true], Literal[value=false]))');
+            const result = tsquery(ast, 'SourceFile:has(IfStatement:has(TrueKeyword, FalseKeyword))');
 
-            expect(result).to.deep.equal([]);
+            expect(result).to.deep.equal([ast]);
         });
     });
 });

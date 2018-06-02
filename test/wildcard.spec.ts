@@ -1,10 +1,5 @@
 // Test Utilities:
-import * as chai from 'chai';
-import * as sinonChai from 'sinon-chai';
-
-// Test setup:
-const { expect } = chai;
-chai.use(sinonChai);
+import { expect } from './index';
 
 // Dependencies:
 import { VariableStatement } from 'typescript';
