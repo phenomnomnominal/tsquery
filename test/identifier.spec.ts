@@ -25,5 +25,13 @@ describe('tsquery:', () => {
                 (((((ast.statements[1] as IfStatement).elseStatement as IfStatement).thenStatement as Block).statements[0] as ExpressionStatement).expression as BinaryExpression).left
             ]);
         });
+
+        it('should throw if an invalid SyntaxKind is used', () => {
+            const ast = tsquery.ast(conditional);
+
+            expect(() => {
+                tsquery(ast, 'FooBar');
+            }).to.throw('"FooBar" is not a valid TypeScript Node kind.');
+        });
     });
 });
