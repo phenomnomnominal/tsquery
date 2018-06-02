@@ -8,7 +8,7 @@ TSQuery is a port of the ESQuery API for TypeScript! Which allows you to query a
 
 [Check out the ESQuery demo](https://estools.github.io/esquery/) - note that the demo requires JavaScript code, not TypeScript
 
-[You can also check out the TSQuery demo](https://tsquery-playground.stackblitz.io) - Lovingly crafted by [Uri Shaked]( https://github.com/urish)
+[You can also check out the TSQuery Playground](https://tsquery-playground.firebaseapp.com) - Lovingly crafted by [Uri Shaked]( https://github.com/urish)
 
 
 # Installation:
