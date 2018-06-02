@@ -1,5 +1,6 @@
 // Dependencies:
 import { Node, SyntaxKind } from 'typescript';
+import { syntaxKindName } from './syntax-kind';
 import { TSQueryNode, TSQueryTraverseOptions } from './tsquery-types';
 
 // Constants:
@@ -56,7 +57,7 @@ export function getVisitorKeys (node: TSQueryNode | null): Array<string> {
 
 export function addProperties (node: TSQueryNode): void {
     if (isNotSet(node, 'kindName')) {
-        node.kindName = SyntaxKind[node.kind];
+        node.kindName = syntaxKindName(node.kind);
     }
 
     if (isNotSet(node, 'text')) {

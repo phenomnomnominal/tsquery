@@ -27,7 +27,7 @@ describe('tsquery:', () => {
 
         it('should not try to cast a RegExp from inside a Template Literal', () => {
             const ast = tsquery.ast('`/fo(o/`;');
-            const [result] = tsquery(ast, 'FirstTemplateToken');
+            const [result] = tsquery(ast, 'NoSubstitutionTemplateLiteral');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
             expect(result.value).to.equal('/fo(o/');
@@ -67,7 +67,7 @@ describe('tsquery:', () => {
 
         it('should correctly cast a number', () => {
             const ast = tsquery.ast('3.3;');
-            const [result] = tsquery(ast, 'FirstLiteralToken');
+            const [result] = tsquery(ast, 'NumericLiteral');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
             expect(result.value).to.equal(3.3);
