@@ -1,7 +1,7 @@
 {
   "name": "@phenomnomnominal/tsquery",
   "version": "2.0.0-beta.1",
-  "description": "Query TypeScript ASTs with the esquery!",
+  "description": "Query TypeScript ASTs with the esquery API!",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "author": "Craig Spence <craigspence0@gmail.com>",
