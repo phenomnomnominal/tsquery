@@ -26,6 +26,9 @@
   "dependencies": {
     "esquery": "^1.0.1"
   },
+  "files": [
+    "dist/src"
+  ],
   "devDependencies": {
     "@types/chai": "^4.1.2",
     "@types/jasmine": "^2.8.6",
