@@ -1,12 +1,12 @@
 // Dependencies:
-import { ast } from './ast';
+import { createAST } from './ast';
 import { findMatches, match } from './match';
 import { parse } from './parse';
 import { query } from './query';
 import { TSQueryApi } from './tsquery-types';
 
 const api = <TSQueryApi>query;
-api.ast = ast;
+api.ast = createAST;
 api.match = match;
 api.matches = findMatches;
 api.parse = parse;
