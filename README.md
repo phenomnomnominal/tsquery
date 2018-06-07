@@ -85,5 +85,5 @@ The following selectors are supported:
 * `StringLiteral` - any string
 * `TrueKeyword`, `FalseKeyword`, `NullKeyword`, `AnyKeyword` - various keywords
 * `CallExpression` - function call
-* `FirstLiteralToken` - any numeric constant
-* `FirstTemplateToken`, `TemplateExpression` - template strings and expressions
+* `NumericLiteral` - any numeric constant
+* `NoSubstitutionTemplateLiteral`, `TemplateExpression` - template strings and expressions

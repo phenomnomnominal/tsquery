@@ -1,5 +1,5 @@
 // Dependencies:
-import { Node, SourceFile } from 'typescript';
+import { Node, SourceFile, SyntaxKind } from 'typescript';
 
 export type TSQueryApi = {
    <T extends Node = Node> (ast: string | Node | TSQueryNode<T>, selector: string): Array<TSQueryNode<T>>;
@@ -8,6 +8,7 @@ export type TSQueryApi = {
    matches (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>): boolean;
    parse (selector: string): TSQuerySelectorNode;
    query <T extends Node = Node> (ast: string | Node | TSQueryNode<T>, selector: string): Array<TSQueryNode<T>>;
+   syntaxKindName (node: SyntaxKind): string;
 };
 
 export type TSQueryAttributeOperatorType = 'regexp' | 'literal' | 'type';
