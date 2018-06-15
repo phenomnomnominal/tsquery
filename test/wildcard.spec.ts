@@ -25,7 +25,7 @@ describe('tsquery:', () => {
         it('should find all nodes (simple function)', () => {
             const result = tsquery(tsquery.ast(simpleFunction), '*');
 
-            expect(result.length).to.equal(22);
+            expect(result.length).to.equal(27);
         });
 
         it('should find all nodes (simple program)', () => {

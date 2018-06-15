@@ -2,7 +2,7 @@
 import { expect } from './index';
 
 // Dependencies:
-import { BinaryExpression, Block, CallExpression, ExpressionStatement, FunctionDeclaration, IfStatement, VariableDeclaration, VariableStatement } from 'typescript';
+import { BinaryExpression, Block, CallExpression, ExpressionStatement, FunctionDeclaration, IfStatement, VariableDeclaration, VariableStatement, JSDoc, JSDocParameterTag } from 'typescript';
 import { conditional, simpleFunction, simpleProgram } from './fixtures';
 
 // Under test:
@@ -69,9 +69,10 @@ describe('tsquery:', () => {
             const result = tsquery(ast, '[name=/x|foo/]');
 
             expect(result).to.deep.equal([
+                (((ast.statements[0] as any).jsDoc as JSDoc[])[0].tags![0] as JSDocParameterTag).name,
                 (ast.statements[0] as FunctionDeclaration).name,
                 (ast.statements[0] as FunctionDeclaration).parameters[0].name,
-                (((((ast.statements[0] as FunctionDeclaration).body as Block).statements[0] as VariableStatement).declarationList.declarations[0] as VariableDeclaration).initializer as BinaryExpression).left
+                (((((ast.statements[0] as FunctionDeclaration).body as Block).statements[0] as VariableStatement).declarationList.declarations[0] as VariableDeclaration).initializer as BinaryExpression).left,
             ]);
         });
 
