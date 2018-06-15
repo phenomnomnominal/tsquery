@@ -1,5 +1,5 @@
 // Dependencies:
-import { Node, SyntaxKind } from 'typescript';
+import { JSDoc, Node, SyntaxKind } from 'typescript';
 import { syntaxKindName } from './syntax-kind';
 import { TSQueryNode, TSQueryTraverseOptions } from './tsquery-types';
 
@@ -27,6 +27,9 @@ const PARSERS: { [key: number]: (node: TSQueryNode) => any } = {
 export function traverse (node: Node | TSQueryNode, options: TSQueryTraverseOptions): void {
     addProperties(node as TSQueryNode);
     options.enter(node as TSQueryNode, node.parent as TSQueryNode || null);
+    if ((node as any).jsDoc) {
+        ((node as any).jsDoc as Array<JSDoc>).forEach(child => traverse(child, options));
+    }
     node.forEachChild(child => traverse(child as TSQueryNode, options));
     options.leave(node as TSQueryNode, node.parent as TSQueryNode || null);
 }
