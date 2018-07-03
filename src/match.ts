@@ -4,7 +4,7 @@ import { MATCHERS } from './matchers';
 import { traverseChildren } from './traverse';
 import { TSQueryNode, TSQuerySelectorNode } from './tsquery-types';
 
-export function match<T extends Node = Node> (node: Node | TSQueryNode<T>, selector: TSQuerySelectorNode): Array<TSQueryNode<T>> {
+export function match <T extends Node = Node> (node: Node | TSQueryNode<T>, selector: TSQuerySelectorNode): Array<TSQueryNode<T>> {
     const results: Array<TSQueryNode<T>> = [];
     if (!selector) {
         return results;

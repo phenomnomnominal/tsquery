@@ -1,17 +1,22 @@
 // Dependencies:
 import { createAST } from './ast';
-import { findMatches, match } from './match';
+import { map } from './map';
+import { match } from './match';
 import { parse } from './parse';
+import { project } from './project';
 import { query } from './query';
+import { replace } from './replace';
 import { syntaxKindName } from './syntax-kind';
 import { TSQueryApi } from './tsquery-types';
 
 const api = <TSQueryApi>query;
 api.ast = createAST;
+api.map = map;
 api.match = match;
-api.matches = findMatches;
 api.parse = parse;
+api.project = project;
 api.query = query;
+api.replace = replace;
 api.syntaxKindName = syntaxKindName;
 
 export const tsquery = api;
