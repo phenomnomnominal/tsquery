@@ -12,7 +12,7 @@ export type TSQueryApi = {
    parse (selector: string): TSQuerySelectorNode;
    project (configFilePath: string): Array<SourceFile>;
    query <T extends Node = Node> (ast: string | Node | TSQueryNode<T>, selector: string): Array<TSQueryNode<T>>;
-   replace <T extends Node = Node> (ast: SourceFile, selector: string, iterator: TSQueryStringTransformer<T>): SourceFile;
+   replace <T extends Node = Node> (text: string, selector: string, iterator: TSQueryStringTransformer<T>): string;
    syntaxKindName (node: SyntaxKind): string;
 };
 
