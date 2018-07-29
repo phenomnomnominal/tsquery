@@ -1,5 +1,5 @@
 // Dependencies:
-import { TSQueryMatchers, TSQueryNode, TSQuerySelectorNode } from '../tsquery-types';
+import { TSQueryMatchers, TSQueryNode, TSQueryOptions, TSQuerySelectorNode } from '../tsquery-types';
 
 // Constants:
 const CLASS_MATCHERS: TSQueryMatchers = {
@@ -10,14 +10,14 @@ const CLASS_MATCHERS: TSQueryMatchers = {
     statement
 };
 
-export function classs (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>): boolean {
+export function classs (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>, options: TSQueryOptions): boolean {
     if (!node.kindName) {
         return false;
     }
 
     const matcher = CLASS_MATCHERS[selector.name.toLowerCase()];
     if (matcher) {
-        return matcher(node, selector, ancestry);
+        return matcher(node, selector, ancestry, options);
     }
 
     throw new Error(`Unknown class name: ${selector.name}`);
