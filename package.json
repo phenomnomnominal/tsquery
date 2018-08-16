@@ -1,6 +1,6 @@
 {
   "name": "@phenomnomnominal/tsquery",
-  "version": "2.0.0-beta.5",
+  "version": "2.0.0-beta.7",
   "description": "Query TypeScript ASTs with the esquery API!",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -24,8 +24,7 @@
     "prepublishOnly": "rm -rf dist && npm run build"
   },
   "dependencies": {
-    "esquery": "^1.0.1",
-    "minimist": "^1.2.0"
+    "esquery": "^1.0.1"
   },
   "files": [
     "dist/src"

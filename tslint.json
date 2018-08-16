@@ -38,7 +38,6 @@
         "no-irregular-whitespace": true,
         "no-misused-new": true,
         "no-namespace": true,
-        "no-non-null-assertion": true,
         "no-reference": true,
         "no-return-await": true,
         "no-shadowed-variable": true,

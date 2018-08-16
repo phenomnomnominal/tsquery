@@ -1,7 +1,7 @@
 // Dependencies:
 import { Node, SyntaxKind } from 'typescript';
 import { syntaxKindName } from './syntax-kind';
-import { TSQueryNode, TSQueryTraverseOptions } from './tsquery-types';
+import { TSQueryNode, TSQueryOptions, TSQueryTraverseOptions } from './tsquery-types';
 
 // Constants:
 const FILTERED_KEYS: Array<string> = ['parent'];
@@ -24,14 +24,7 @@ const PARSERS: { [key: number]: (node: TSQueryNode) => any } = {
     [SyntaxKind.TrueKeyword]: () => true
 };
 
-export function traverse (node: Node | TSQueryNode, options: TSQueryTraverseOptions): void {
-    addProperties(node as TSQueryNode);
-    options.enter(node as TSQueryNode, node.parent as TSQueryNode || null);
-    node.forEachChild(child => traverse(child as TSQueryNode, options));
-    options.leave(node as TSQueryNode, node.parent as TSQueryNode || null);
-}
-
-export function traverseChildren (node: Node | TSQueryNode, iterator: (childNode: TSQueryNode, ancestors: Array<TSQueryNode>) => void): void {
+export function traverseChildren (node: Node | TSQueryNode, iterator: (childNode: TSQueryNode, ancestors: Array<TSQueryNode>) => void, options: TSQueryOptions): void {
     const ancestors: Array<TSQueryNode> = [];
     traverse(node, {
         enter (childNode: TSQueryNode, parentNode: TSQueryNode | null): void {
@@ -42,8 +35,20 @@ export function traverseChildren (node: Node | TSQueryNode, iterator: (childNode
         },
         leave (): void {
             ancestors.shift();
-        }
+        },
+        visitAllChildren: !!options.visitAllChildren
     });
+}
+
+function traverse (node: Node | TSQueryNode, traverseOptions: TSQueryTraverseOptions): void {
+    addProperties(node as TSQueryNode);
+    traverseOptions.enter(node as TSQueryNode, node.parent as TSQueryNode || null);
+    if (traverseOptions.visitAllChildren) {
+        node.getChildren().forEach(child => traverse(child as TSQueryNode, traverseOptions));
+    } else {
+        node.forEachChild(child => traverse(child as TSQueryNode, traverseOptions));
+    }
+    traverseOptions.leave(node as TSQueryNode, node.parent as TSQueryNode || null);
 }
 
 export function getVisitorKeys (node: TSQueryNode | null): Array<string> {
