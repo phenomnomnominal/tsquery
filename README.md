@@ -10,14 +10,13 @@ TSQuery is a port of the ESQuery API for TypeScript! TSQuery allows you to query
 
 [You can also check out the TSQuery Playground](https://tsquery-playground.firebaseapp.com) - Lovingly crafted by [Uri Shaked]( https://github.com/urish)
 
+## Installation
 
-# Installation:
-
-```
+```sh
 npm install @phenomnomnominal/tsquery --save-dev
 ```
 
-# Examples:
+## Examples
 
 Say we want to select all instances of an identifier with name "Animal", e.g. the identifier in the `class` declaration, and the identifier in the `extends` declaration.
 
@@ -52,9 +51,10 @@ console.log(nodes.length); // 2
 
 [Try running this code in StackBlitz](https://stackblitz.com/edit/tsquery-examples)!
 
-# Selectors:
+### Selectors
 
 The following selectors are supported:
+
 * AST node type: `ForStatement` (see [common node types](#common-ast-node-types))
 * [wildcard](http://dev.w3.org/csswg/selectors4/#universal-selector): `*`
 * [attribute existence](http://dev.w3.org/csswg/selectors4/#attribute-selectors): `[attr]`
@@ -75,7 +75,7 @@ The following selectors are supported:
 * [has](https://drafts.csswg.org/selectors-4/#has-pseudo): `IfStatement:has([name="foo"])`
 * class of AST node: `:statement`, `:expression`, `:declaration`, `:function`, or `:pattern`
 
-### Common AST node types:
+### Common AST node types
 
 * `Identifier` - any identifier (name of a function, class, variable, etc)
 * `IfStatement`, `ForStatement`, `WhileStatement`, `DoStatement` - control flow

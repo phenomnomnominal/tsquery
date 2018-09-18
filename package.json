@@ -1,6 +1,6 @@
 {
   "name": "@phenomnomnominal/tsquery",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Query TypeScript ASTs with the esquery API!",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -11,6 +11,8 @@
   },
   "license": "MIT",
   "scripts": {
+    "build": "npm run clean && npm run compile && npm run lint && npm run test",
+    "clean": "rimraf dist",
     "compile": "tsc",
     "lint": "npm run lint:src && npm run lint:test",
     "lint:src": "tslint --project ./tsconfig.json -c ./tslint.json 'src/**/*.ts'",
@@ -20,8 +22,7 @@
     "lint:test:fix": "tslint -c tslint.json 'test/**/*.ts' --fix",
     "test": "jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
-    "build": "npm run compile && npm run lint && npm run test",
-    "prepublishOnly": "rm -rf dist && npm run build"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "esquery": "^1.0.1"
@@ -33,16 +34,19 @@
     "dist/src"
   ],
   "devDependencies": {
-    "@types/chai": "^4.1.2",
-    "@types/jasmine": "^2.8.6",
+    "@types/chai": "^4.1.4",
+    "@types/jasmine": "^2.8.8",
     "@types/minimist": "^1.2.0",
-    "@types/node": "^9.4.7",
+    "@types/node": "^10.10.1",
     "chai": "^4.1.2",
-    "jest": "^22.4.2",
-    "ts-jest": "^22.4.6",
-    "ts-node": "^5.0.1",
-    "tslint": "^5.6.0",
-    "typescript": "^2"
+    "jest": "^23.6.0",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^23.1.4",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
   },
   "jest": {
     "globals": {
@@ -58,7 +62,7 @@
     ],
     "coverageDirectory": "<rootDir>/reports/coverage",
     "transform": {
-      "\\.(ts)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "\\.(ts)$": "ts-jest"
     },
     "testRegex": "/test/.*\\.spec\\.ts$"
   }
