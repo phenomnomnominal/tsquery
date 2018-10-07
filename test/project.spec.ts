@@ -9,13 +9,13 @@ describe('tsquery:', () => {
         it('should process a tsconfig.json file', () => {
             const files = tsquery.project('./tsconfig.json');
 
-            expect(files.length).to.equal(79);
+            expect(files.length).to.equal(80);
         });
 
         it('should find a tsconfig.json file in a director', () => {
             const files = tsquery.project('./');
 
-            expect(files.length).to.equal(79);
+            expect(files.length).to.equal(80);
         });
 
         it(`should handle when a path doesn't exist`, () => {
