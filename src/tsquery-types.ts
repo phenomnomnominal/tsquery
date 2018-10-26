@@ -27,7 +27,9 @@ export type TSQueryMatchers = {
     [key: string]: TSQueryMatcher;
 };
 
-export type TSQueryNode <T extends Node = Node> = T & {
+export type TSQueryNode<T extends Node = Node> = T;
+
+export type TSQueryProperties = {
     // We convert the `kind` property to its string name from the `SyntaxKind` enum:
     // Some nodes have more that one applicable `SyntaxKind`...
     kindName: string;

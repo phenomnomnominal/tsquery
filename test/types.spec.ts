@@ -6,6 +6,7 @@ import { ExpressionStatement, NoSubstitutionTemplateLiteral, TaggedTemplateExpre
 
 // Under test:
 import { tsquery } from '../src/index';
+import { getProperties } from '../src/traverse';
 
 describe('tsquery:', () => {
     describe('tsquery - types:', () => {
@@ -14,7 +15,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'StringLiteral');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value).to.equal('hello');
+            expect(getProperties(result).value).to.equal('hello');
         });
 
         it('should not try to cast a RegExp from inside a String', () => {
@@ -22,7 +23,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'StringLiteral');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value).to.equal('/t(/');
+            expect(getProperties(result).value).to.equal('/t(/');
         });
 
         it('should not try to cast a RegExp from inside a Template Literal', () => {
@@ -30,7 +31,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'NoSubstitutionTemplateLiteral');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value).to.equal('/fo(o/');
+            expect(getProperties(result).value).to.equal('/fo(o/');
         });
 
         it('should not try to cast a RegExp from inside a Tagged Template Literal', () => {
@@ -46,7 +47,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'FalseKeyword');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value).to.equal(false);
+            expect(getProperties(result).value).to.equal(false);
         });
 
         it('should correctly cast a boolean true', () => {
@@ -54,7 +55,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'TrueKeyword');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value).to.equal(true);
+            expect(getProperties(result).value).to.equal(true);
         });
 
         it('should correctly cast a null', () => {
@@ -62,7 +63,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'NullKeyword');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value).to.equal(null);
+            expect(getProperties(result).value).to.equal(null);
         });
 
         it('should correctly cast a number', () => {
@@ -70,7 +71,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'NumericLiteral');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value).to.equal(3.3);
+            expect(getProperties(result).value).to.equal(3.3);
         });
 
         it('should correctly cast a RegExp', () => {
@@ -78,7 +79,7 @@ describe('tsquery:', () => {
             const [result] = tsquery(ast, 'RegularExpressionLiteral');
 
             expect(result).to.equal((ast.statements[0] as ExpressionStatement).expression);
-            expect(result.value instanceof RegExp).to.equal(true);
+            expect(getProperties(result).value instanceof RegExp).to.equal(true);
         });
     });
 });

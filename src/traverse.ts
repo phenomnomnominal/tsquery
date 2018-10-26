@@ -1,7 +1,7 @@
 // Dependencies:
 import { Node, SyntaxKind } from 'typescript';
 import { syntaxKindName } from './syntax-kind';
-import { TSQueryNode, TSQueryOptions, TSQueryTraverseOptions } from './tsquery-types';
+import { TSQueryNode, TSQueryOptions, TSQueryProperties, TSQueryTraverseOptions } from './tsquery-types';
 
 // Constants:
 const FILTERED_KEYS: Array<string> = ['parent'];
@@ -14,13 +14,13 @@ const LITERAL_KINDS: Array<SyntaxKind> = [
     SyntaxKind.StringLiteral,
     SyntaxKind.TrueKeyword
 ];
-const PARSERS: { [key: number]: (node: TSQueryNode) => any } = {
+const PARSERS: { [key: number]: (properties: TSQueryProperties) => any } = {
     [SyntaxKind.FalseKeyword]: () => false,
-    [SyntaxKind.NoSubstitutionTemplateLiteral]: (node: TSQueryNode) => node.text,
+    [SyntaxKind.NoSubstitutionTemplateLiteral]: (properties: TSQueryProperties) => properties.text,
     [SyntaxKind.NullKeyword]: () => null,
-    [SyntaxKind.NumericLiteral]: (node: TSQueryNode) => +node.text,
-    [SyntaxKind.RegularExpressionLiteral]: (node: TSQueryNode) => new RegExp(node.text),
-    [SyntaxKind.StringLiteral]: (node: TSQueryNode) => node.text,
+    [SyntaxKind.NumericLiteral]: (properties: TSQueryProperties) => +properties.text,
+    [SyntaxKind.RegularExpressionLiteral]: (properties: TSQueryProperties) => new RegExp(properties.text),
+    [SyntaxKind.StringLiteral]: (properties: TSQueryProperties) => properties.text,
     [SyntaxKind.TrueKeyword]: () => true
 };
 
@@ -41,7 +41,6 @@ export function traverseChildren (node: Node | TSQueryNode, iterator: (childNode
 }
 
 function traverse (node: Node | TSQueryNode, traverseOptions: TSQueryTraverseOptions): void {
-    addProperties(node as TSQueryNode);
     traverseOptions.enter(node as TSQueryNode, node.parent as TSQueryNode || null);
     if (traverseOptions.visitAllChildren) {
         node.getChildren().forEach(child => traverse(child as TSQueryNode, traverseOptions));
@@ -60,24 +59,26 @@ export function getVisitorKeys (node: TSQueryNode | null): Array<string> {
     }) : [];
 }
 
-export function addProperties (node: TSQueryNode): void {
-    if (isNotSet(node, 'kindName')) {
-        node.kindName = syntaxKindName(node.kind);
-    }
+const propertiesMap = new WeakMap<TSQueryNode, TSQueryProperties>();
 
-    if (isNotSet(node, 'text')) {
-        node.text = node.getText();
+export function getProperties (node: TSQueryNode): TSQueryProperties {
+    let properties = propertiesMap.get(node);
+    if (!properties) {
+        properties = {
+            kindName: syntaxKindName(node.kind),
+            text: hasKey(node, 'text') ? node.text : node.getText()
+        };
+        if (node.kind === SyntaxKind.Identifier) {
+            properties.name = hasKey(node, 'name') ? node.name : properties.text;
+        }
+        if (LITERAL_KINDS.includes(node.kind)) {
+            properties.value = PARSERS[node.kind](properties);
+        }
+        propertiesMap.set(node, properties);
     }
-
-    if (node.kind === SyntaxKind.Identifier && isNotSet(node, 'name')) {
-        node.name = node.text;
-    }
-
-    if (isNotSet(node, 'value') && LITERAL_KINDS.includes(node.kind)) {
-        node.value = PARSERS[node.kind](node);
-    }
+    return properties;
 }
 
-function isNotSet (object: any, property: string): boolean {
-    return object[property] == null;
+function hasKey<K extends { [key: string]: any }> (node: any, property: keyof K): node is K {
+    return node[property] != null;
 }
