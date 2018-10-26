@@ -2,10 +2,14 @@
 import { expect } from './index';
 
 // Dependencies:
-import { createIdentifier, createPrinter, createPropertyAccess, createThis } from 'typescript';
+import { createIdentifier, createPrinter, createPropertyAccess, createThis, NewLineKind } from 'typescript';
 
 // Under test:
 import { tsquery } from '../src/index';
+
+const printerOptions = {
+    newLine: NewLineKind.LineFeed
+};
 
 describe('tsquery:', () => {
     describe('tsquery.map:', () => {
@@ -18,7 +22,7 @@ console.log('bar');
 
             `.trim());
             const result = tsquery.map(ast, 'Identifier[name="console"]', () => createIdentifier('logger'));
-            const printer = createPrinter();
+            const printer = createPrinter(printerOptions);
             expect(printer.printFile(result).trim()).to.equal(`
 
 logger.log('foo');
@@ -37,7 +41,7 @@ console.log('bar');
 
             `.trim());
             const result = tsquery.map(ast, 'Identifier[name="console"]', () => createPropertyAccess(createThis(), 'logger'));
-            const printer = createPrinter();
+            const printer = createPrinter(printerOptions);
             expect(printer.printFile(result).trim()).to.equal(`
 
 this.logger.log('foo');
@@ -56,7 +60,7 @@ console.log('bar');
 
             `.trim());
             const result = tsquery.map(ast, 'Identifier[name="console"]', () => null);
-            const printer = createPrinter();
+            const printer = createPrinter(printerOptions);
             expect(printer.printFile(result).trim()).to.equal(`
 
 console.log('foo');
