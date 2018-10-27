@@ -1,8 +1,9 @@
 // Dependencies:
+import { Node } from 'typescript';
 import { findMatches } from '../match';
-import { TSQueryNode, TSQuerySelectorNode } from '../tsquery-types';
+import { TSQuerySelectorNode } from '../tsquery-types';
 
-export function not (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>): boolean {
+export function not (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>): boolean {
     return !selector.selectors.some(childSelector => {
         return findMatches(node, childSelector, ancestry);
     });

@@ -1,6 +1,7 @@
 // Dependencies:
+import { Node } from 'typescript';
 import { getProperties } from '../traverse';
-import { TSQueryMatchers, TSQueryNode, TSQueryOptions, TSQuerySelectorNode } from '../tsquery-types';
+import { TSQueryMatchers, TSQueryOptions, TSQuerySelectorNode } from '../tsquery-types';
 
 // Constants:
 const CLASS_MATCHERS: TSQueryMatchers = {
@@ -11,7 +12,7 @@ const CLASS_MATCHERS: TSQueryMatchers = {
     statement
 };
 
-export function classs (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>, options: TSQueryOptions): boolean {
+export function classs (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, options: TSQueryOptions): boolean {
     if (!getProperties(node).kindName) {
         return false;
     }
@@ -24,28 +25,28 @@ export function classs (node: TSQueryNode, selector: TSQuerySelectorNode, ancest
     throw new Error(`Unknown class name: ${selector.name}`);
 }
 
-function declaration (node: TSQueryNode): boolean {
+function declaration (node: Node): boolean {
     return getProperties(node).kindName.endsWith('Declaration');
 }
 
-function expression (node: TSQueryNode): boolean {
+function expression (node: Node): boolean {
     const { kindName } = getProperties(node);
     return kindName.endsWith('Expression') ||
         kindName.endsWith('Literal') ||
-        (kindName === 'Identifier' && !!node.parent && getProperties(node.parent as TSQueryNode).kindName !== 'MetaProperty') ||
+        (kindName === 'Identifier' && !!node.parent && getProperties(node.parent).kindName !== 'MetaProperty') ||
         kindName === 'MetaProperty';
 }
 
-function fn (node: TSQueryNode): boolean {
+function fn (node: Node): boolean {
     const { kindName } = getProperties(node);
     return kindName.startsWith('Function') ||
         kindName === 'ArrowFunction';
 }
 
-function pattern (node: TSQueryNode): boolean {
+function pattern (node: Node): boolean {
     return getProperties(node).kindName.endsWith('Pattern') || expression(node);
 }
 
-function statement (node: TSQueryNode): boolean {
+function statement (node: Node): boolean {
     return getProperties(node).kindName.endsWith('Statement') || declaration(node);
 }

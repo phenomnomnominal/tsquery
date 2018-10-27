@@ -1,18 +1,18 @@
 // Dependencies:
 import { Node, SourceFile, SyntaxKind } from 'typescript';
 
-export type TSQueryNodeTransformer<T extends Node = Node> = (node: Node | TSQueryNode<T>) => Node | null | undefined;
-export type TSQueryStringTransformer<T extends Node = Node> = (node: Node | TSQueryNode<T>) => string | null | undefined;
+export type TSQueryNodeTransformer = (node: Node) => Node | null | undefined;
+export type TSQueryStringTransformer = (node: Node) => string | null | undefined;
 
 export type TSQueryApi = {
-   <T extends Node = Node> (ast: string | Node | TSQueryNode<T>, selector: string, options?: TSQueryOptions): Array<TSQueryNode<T>>;
+   <T extends Node = Node> (ast: string | Node, selector: string, options?: TSQueryOptions): Array<T>;
    ast (source: string, fileName?: string): SourceFile;
-   map <T extends Node = Node> (ast: SourceFile, selector: string, nodeTransformer: TSQueryNodeTransformer<T>, options?: TSQueryOptions): SourceFile;
-   match <T extends Node = Node> (ast: Node | TSQueryNode<T>, selector: TSQuerySelectorNode, options?: TSQueryOptions): Array<TSQueryNode<T>>;
+   map (ast: SourceFile, selector: string, nodeTransformer: TSQueryNodeTransformer, options?: TSQueryOptions): SourceFile;
+   match <T extends Node = Node> (ast: Node, selector: TSQuerySelectorNode, options?: TSQueryOptions): Array<T>;
    parse (selector: string, options?: TSQueryOptions): TSQuerySelectorNode;
    project (configFilePath: string): Array<SourceFile>;
-   query <T extends Node = Node> (ast: string | Node | TSQueryNode<T>, selector: string, options?: TSQueryOptions): Array<TSQueryNode<T>>;
-   replace <T extends Node = Node> (source: string, selector: string, stringTransformer: TSQueryStringTransformer<T>, options?: TSQueryOptions): string;
+   query <T extends Node = Node> (ast: string | Node, selector: string, options?: TSQueryOptions): Array<T>;
+   replace (source: string, selector: string, stringTransformer: TSQueryStringTransformer, options?: TSQueryOptions): string;
    syntaxKindName (node: SyntaxKind): string;
 };
 
@@ -22,12 +22,10 @@ export type TSQueryAttributeOperators = {
     [key: string]: TSQueryAttributeOperator
 };
 
-export type TSQueryMatcher = (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>, options: TSQueryOptions) => boolean;
+export type TSQueryMatcher = (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, options: TSQueryOptions) => boolean;
 export type TSQueryMatchers = {
     [key: string]: TSQueryMatcher;
 };
-
-export type TSQueryNode<T extends Node = Node> = T;
 
 export type TSQueryProperties = {
     // We convert the `kind` property to its string name from the `SyntaxKind` enum:
@@ -58,8 +56,8 @@ export type TSQuerySelectorNode = {
     value: TSQuerySelectorNode | RegExp | number | string;
 };
 
-export type TSQueryTraverseOptions <T extends Node = Node> = {
-    enter: (node: TSQueryNode<T>, parent: TSQueryNode<T> | null) => void;
-    leave: (node: TSQueryNode<T>, parent: TSQueryNode<T> | null) => void;
+export type TSQueryTraverseOptions = {
+    enter: (node: Node, parent: Node | null) => void;
+    leave: (node: Node, parent: Node | null) => void;
     visitAllChildren: boolean;
 };

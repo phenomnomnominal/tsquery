@@ -1,9 +1,10 @@
 // Dependencies:
+import { Node } from 'typescript';
 import { findMatches } from '../match';
 import { getVisitorKeys } from '../traverse';
-import { TSQueryNode, TSQuerySelectorNode } from '../tsquery-types';
+import { TSQuerySelectorNode } from '../tsquery-types';
 
-export function sibling (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>): boolean {
+export function sibling (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>): boolean {
     return findMatches(node, selector.right, ancestry) &&
         findSibling(node, ancestry, siblingLeft) ||
         selector.left.subject &&
@@ -11,19 +12,19 @@ export function sibling (node: TSQueryNode, selector: TSQuerySelectorNode, ances
         findSibling(node, ancestry, siblingRight);
 
     function siblingLeft (prop: any, index: number): boolean {
-        return prop.slice(0, index).some((precedingSibling: TSQueryNode) => {
+        return prop.slice(0, index).some((precedingSibling: Node) => {
             return findMatches(precedingSibling, selector.left, ancestry);
         });
     }
 
     function siblingRight (prop: any, index: number): boolean {
-        return prop.slice(index, prop.length).some((followingSibling: TSQueryNode) => {
+        return prop.slice(index, prop.length).some((followingSibling: Node) => {
             return findMatches(followingSibling, selector.right, ancestry);
         });
     }
 }
 
-export function adjacent (node: TSQueryNode, selector: TSQuerySelectorNode, ancestry: Array<TSQueryNode>): boolean {
+export function adjacent (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>): boolean {
     return findMatches(node, selector.right, ancestry) &&
         findSibling(node, ancestry, adjacentLeft) ||
         selector.right.subject &&
@@ -39,13 +40,13 @@ export function adjacent (node: TSQueryNode, selector: TSQuerySelectorNode, ance
     }
 }
 
-function findSibling (node: TSQueryNode, ancestry: Array<TSQueryNode>, test: (prop: any, index: number) => boolean): boolean {
+function findSibling (node: Node, ancestry: Array<Node>, test: (prop: any, index: number) => boolean): boolean {
     const [parent] = ancestry;
     if (!parent) {
         return false;
     }
 
-    const keys = getVisitorKeys(node.parent as TSQueryNode || null);
+    const keys = getVisitorKeys(node.parent || null);
     return keys.some(key => {
         const prop = (node.parent as any)[key];
         if (Array.isArray(prop)) {

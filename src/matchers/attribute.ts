@@ -1,5 +1,6 @@
 // Dependencies:
-import { TSQueryAttributeOperators, TSQueryAttributeOperatorType, TSQueryNode, TSQuerySelectorNode } from '../tsquery-types';
+import { Node } from 'typescript';
+import { TSQueryAttributeOperators, TSQueryAttributeOperatorType, TSQuerySelectorNode } from '../tsquery-types';
 import { getPath } from '../utils';
 
 // Constants:
@@ -12,7 +13,7 @@ const OPERATOR: TSQueryAttributeOperators = {
     '>': greaterThan
 };
 
-export function attribute (node: TSQueryNode, selector: TSQuerySelectorNode): boolean {
+export function attribute (node: Node, selector: TSQuerySelectorNode): boolean {
     const obj: any = getPath(node, selector.name);
 
     // Bail on undefined but *not* if value is explicitly `null`:

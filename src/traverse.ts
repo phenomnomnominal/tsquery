@@ -1,7 +1,7 @@
 // Dependencies:
 import { Node, SyntaxKind } from 'typescript';
 import { syntaxKindName } from './syntax-kind';
-import { TSQueryNode, TSQueryOptions, TSQueryProperties, TSQueryTraverseOptions } from './tsquery-types';
+import { TSQueryOptions, TSQueryProperties, TSQueryTraverseOptions } from './tsquery-types';
 
 // Constants:
 const FILTERED_KEYS: Array<string> = ['parent'];
@@ -24,10 +24,10 @@ const PARSERS: { [key: number]: (properties: TSQueryProperties) => any } = {
     [SyntaxKind.TrueKeyword]: () => true
 };
 
-export function traverseChildren (node: Node | TSQueryNode, iterator: (childNode: TSQueryNode, ancestors: Array<TSQueryNode>) => void, options: TSQueryOptions): void {
-    const ancestors: Array<TSQueryNode> = [];
+export function traverseChildren (node: Node, iterator: (childNode: Node, ancestors: Array<Node>) => void, options: TSQueryOptions): void {
+    const ancestors: Array<Node> = [];
     traverse(node, {
-        enter (childNode: TSQueryNode, parentNode: TSQueryNode | null): void {
+        enter (childNode: Node, parentNode: Node | null): void {
             if (parentNode != null) {
                 ancestors.unshift(parentNode);
             }
@@ -40,17 +40,17 @@ export function traverseChildren (node: Node | TSQueryNode, iterator: (childNode
     });
 }
 
-function traverse (node: Node | TSQueryNode, traverseOptions: TSQueryTraverseOptions): void {
-    traverseOptions.enter(node as TSQueryNode, node.parent as TSQueryNode || null);
+function traverse (node: Node, traverseOptions: TSQueryTraverseOptions): void {
+    traverseOptions.enter(node, node.parent || null);
     if (traverseOptions.visitAllChildren) {
-        node.getChildren().forEach(child => traverse(child as TSQueryNode, traverseOptions));
+        node.getChildren().forEach(child => traverse(child, traverseOptions));
     } else {
-        node.forEachChild(child => traverse(child as TSQueryNode, traverseOptions));
+        node.forEachChild(child => traverse(child, traverseOptions));
     }
-    traverseOptions.leave(node as TSQueryNode, node.parent as TSQueryNode || null);
+    traverseOptions.leave(node, node.parent || null);
 }
 
-export function getVisitorKeys (node: TSQueryNode | null): Array<string> {
+export function getVisitorKeys (node: Node | null): Array<string> {
     return !!node ? Object.keys(node)
     .filter(key => !FILTERED_KEYS.includes(key))
     .filter(key => {
@@ -59,9 +59,9 @@ export function getVisitorKeys (node: TSQueryNode | null): Array<string> {
     }) : [];
 }
 
-const propertiesMap = new WeakMap<TSQueryNode, TSQueryProperties>();
+const propertiesMap = new WeakMap<Node, TSQueryProperties>();
 
-export function getProperties (node: TSQueryNode): TSQueryProperties {
+export function getProperties (node: Node): TSQueryProperties {
     let properties = propertiesMap.get(node);
     if (!properties) {
         properties = {
