@@ -1,9 +1,9 @@
 // Dependencies:
 import { Node, SourceFile, transform, TransformationContext, Transformer, TransformerFactory, visitEachChild,  visitNode } from 'typescript';
 import { query } from './query';
-import { TSQueryNode, TSQueryNodeTransformer, TSQueryOptions } from './tsquery-types';
+import { TSQueryNodeTransformer, TSQueryOptions } from './tsquery-types';
 
-export function map <T extends Node = Node> (ast: SourceFile, selector: string, nodeTransformer: TSQueryNodeTransformer<T>, options: TSQueryOptions = {}): SourceFile {
+export function map (ast: SourceFile, selector: string, nodeTransformer: TSQueryNodeTransformer, options: TSQueryOptions = {}): SourceFile {
     // TODO: Doing map like this means the full tree is visited twice.
     // It might be better to change `query()` to use `transform()`,
     // but with a noop?
@@ -13,12 +13,12 @@ export function map <T extends Node = Node> (ast: SourceFile, selector: string, 
     return transformed as SourceFile;
 }
 
-function createTransformer <T extends Node = Node> (results: Array<TSQueryNode>, nodeTransformer: TSQueryNodeTransformer<T>): TransformerFactory<Node | TSQueryNode> {
-    return function (context: TransformationContext): Transformer<Node | TSQueryNode> {
-        return function (rootNode: Node | TSQueryNode): Node | TSQueryNode {
+function createTransformer (results: Array<Node>, nodeTransformer: TSQueryNodeTransformer): TransformerFactory<Node> {
+    return function (context: TransformationContext): Transformer<Node> {
+        return function (rootNode: Node): Node {
             function visit (node: Node): Node {
-                if (results.includes(node as TSQueryNode)) {
-                    const replacement = nodeTransformer(node as TSQueryNode);
+                if (results.includes(node)) {
+                    const replacement = nodeTransformer(node);
                     return replacement ? replacement : node;
                 }
                 return visitEachChild(node, visit, context);

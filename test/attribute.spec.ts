@@ -7,6 +7,7 @@ import { conditional, simpleFunction, simpleProgram } from './fixtures';
 
 // Under test:
 import { tsquery } from '../src/index';
+import { getProperties } from '../src/traverse';
 
 describe('tsquery:', () => {
     describe('tsquery - attribute:', () => {
@@ -119,7 +120,7 @@ describe('tsquery:', () => {
                 (((ast.statements[1] as IfStatement).expression as BinaryExpression).left as BinaryExpression).right,
                 ((ast.statements[1] as IfStatement).elseStatement as IfStatement).expression
             ]);
-            expect(result.every(node => typeof node.value === 'boolean')).to.equal(true);
+            expect(result.every(node => typeof getProperties(node).value === 'boolean')).to.equal(true);
         });
 
         it('should find any nodes with an attribute with a value that is not a specific type', () => {
@@ -130,7 +131,7 @@ describe('tsquery:', () => {
                 (ast.statements[0] as VariableStatement).declarationList.declarations[0].initializer,
                 (((ast.statements[2] as ExpressionStatement).expression as BinaryExpression).right as BinaryExpression).right
             ]);
-            expect(result.every(node => typeof node.value !== 'string')).to.equal(true);
+            expect(result.every(node => typeof getProperties(node).value !== 'string')).to.equal(true);
         });
     });
 });
