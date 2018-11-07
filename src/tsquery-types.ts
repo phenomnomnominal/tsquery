@@ -1,14 +1,14 @@
 // Dependencies:
-import { Node, SourceFile, SyntaxKind } from 'typescript';
+import { Node, ScriptKind, SourceFile, SyntaxKind } from 'typescript';
 
 export type TSQueryNodeTransformer = (node: Node) => Node | null | undefined;
 export type TSQueryStringTransformer = (node: Node) => string | null | undefined;
 
 export type TSQueryApi = {
    <T extends Node = Node> (ast: string | Node, selector: string, options?: TSQueryOptions): Array<T>;
-   ast (source: string, fileName?: string): SourceFile;
+   ast (source: string, fileName?: string, scriptKind?: ScriptKind): SourceFile;
    map (ast: SourceFile, selector: string, nodeTransformer: TSQueryNodeTransformer, options?: TSQueryOptions): SourceFile;
-   match <T extends Node = Node> (ast: Node, selector: TSQuerySelectorNode, options?: TSQueryOptions): Array<T>;
+   match <T extends Node = Node> (ast: Node<T>, selector: TSQuerySelectorNode, options?: TSQueryOptions): Array<T>;
    parse (selector: string, options?: TSQueryOptions): TSQuerySelectorNode;
    project (configFilePath: string): Array<SourceFile>;
    query <T extends Node = Node> (ast: string | Node, selector: string, options?: TSQueryOptions): Array<T>;
