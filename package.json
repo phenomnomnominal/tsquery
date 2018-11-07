@@ -1,6 +1,6 @@
 {
   "name": "@phenomnomnominal/tsquery",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "Query TypeScript ASTs with the esquery API!",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
