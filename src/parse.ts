@@ -1,5 +1,5 @@
 // Dependencies:
-import * as esquery from 'esquery';
+import * as queryParser from './parser/parser.js';
 import { SyntaxKind } from 'typescript';
 import { TSQuerySelectorNode } from './tsquery-types';
 
@@ -7,7 +7,7 @@ import { TSQuerySelectorNode } from './tsquery-types';
 const IDENTIFIER_QUERY = 'identifier';
 
 export function parse (selector: string): TSQuerySelectorNode {
-    return validateParse(esquery.parse(selector));
+    return validateParse(queryParser.parse(selector));
 }
 
 function validateParse (selector: TSQuerySelectorNode): TSQuerySelectorNode {

@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "lib": [
       "es2017",
@@ -11,6 +10,7 @@
     "noUnusedParameters": true,
     "pretty": true,
     "sourceMap": true,
+    "allowJs": true,
     "strict": true,
     "target": "ES5",
     "outDir": "./dist",

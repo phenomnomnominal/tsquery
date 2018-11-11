@@ -24,9 +24,7 @@
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "esquery": "^1.0.1"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "typescript": "^3"
   },
