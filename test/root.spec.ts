@@ -15,7 +15,12 @@ describe('tsquery:', () => {
             const result = tsquery(ast, ':root > FunctionDeclaration');
             expect(result.length).to.equal(1);
             expect(result[0].kind).to.equal(SyntaxKind.FunctionDeclaration);
-            expect((result[0] as FunctionDeclaration).name.text).to.eq('a');
+            const name = (result[0] as FunctionDeclaration).name;
+            expect(name).to.not.equal(null);
+            expect(name).to.not.equal(undefined);
+            if (name) {
+                expect(name.text).to.eq('a');
+            }
         });
 
         it('Should find the first function of root level from a child', () => {
@@ -25,7 +30,12 @@ describe('tsquery:', () => {
             const result = tsquery(child, ':root > FunctionDeclaration');
             expect(result.length).to.equal(1);
             expect(result[0].kind).to.equal(SyntaxKind.FunctionDeclaration);
-            expect((result[0] as FunctionDeclaration).name.text).to.eq('a');
+            const name = (result[0] as FunctionDeclaration).name;
+            expect(name).to.not.equal(null);
+            expect(name).to.not.equal(undefined);
+            if (name) {
+                expect(name.text).to.eq('a');
+            }
         });
 
         it('Should find all the function inside root level from a child', () => {
@@ -35,9 +45,19 @@ describe('tsquery:', () => {
             const result = tsquery(child, ':root FunctionDeclaration');
             expect(result.length).to.equal(2);
             expect(result[0].kind).to.equal(SyntaxKind.FunctionDeclaration);
-            expect((result[0] as FunctionDeclaration).name.text).to.eq('a');
+            const nameA = (result[0] as FunctionDeclaration).name;
+            expect(nameA).to.not.equal(null);
+            expect(nameA).to.not.equal(undefined);
+            if (nameA) {
+                expect(nameA.text).to.eq('a');
+            }
             expect(result[1].kind).to.equal(SyntaxKind.FunctionDeclaration);
-            expect((result[1] as FunctionDeclaration).name.text).to.eq('b');
+            const nameB = (result[1] as FunctionDeclaration).name;
+            expect(nameB).to.not.equal(null);
+            expect(nameB).to.not.equal(undefined);
+            if (nameB) {
+                expect(nameB.text).to.eq('b');
+            }
         });
     });
 });

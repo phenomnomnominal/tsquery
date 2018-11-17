@@ -10,6 +10,12 @@ export function match <T extends Node = Node> (node: Node, selector: TSQuerySele
         return results;
     }
 
+    if (selector.left) {
+        if (selector.left.type as any === 'root') {
+            node = getRootNode(node);
+        }
+    }
+
     traverseChildren(node, (childNode: Node, ancestry: Array<Node>) => {
         if (findMatches(childNode, selector, ancestry, options)) {
             results.push(childNode as T);
@@ -33,4 +39,11 @@ export function findMatches (node: Node, selector: TSQuerySelectorNode, ancestry
     }
 
     throw new Error(`Unknown selector type: ${selector.type}`);
+}
+
+function getRootNode(node: Node): Node {
+    while (node.parent) {
+        node = node.parent;
+    }
+    return node;
 }
