@@ -40,7 +40,7 @@ export function traverseChildren (node: Node, iterator: (childNode: Node, ancest
     });
 }
 
-function traverse (node: Node, traverseOptions: TSQueryTraverseOptions): void {
+export function traverse (node: Node, traverseOptions: TSQueryTraverseOptions): void {
     traverseOptions.enter(node, node.parent || null);
     if (traverseOptions.visitAllChildren) {
         node.getChildren().forEach(child => traverse(child, traverseOptions));
