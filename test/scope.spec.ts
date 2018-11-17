@@ -21,7 +21,6 @@ describe('tsquery:', () => {
             if (name) {
                 expect(name.text).to.eq('a');
             }
-            
         });
 
         it('Should find the first function of root level from a child', () => {
