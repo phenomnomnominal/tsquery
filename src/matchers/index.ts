@@ -12,8 +12,11 @@ import { identifier } from './identifier';
 import { matches } from './matches';
 import { not } from './not';
 import { nthChild, nthLastChild } from './nth-child';
+import { root } from './root';
+import { scope } from './scope';
 import { adjacent, sibling } from './sibling';
 import { wildcard } from './wildcard';
+
 
 export const MATCHERS: TSQueryMatchers = {
     adjacent,
@@ -29,6 +32,8 @@ export const MATCHERS: TSQueryMatchers = {
     identifier,
     matches: matches('some'),
     not,
+    root,
+    scope,
     sibling,
     wildcard
 };
