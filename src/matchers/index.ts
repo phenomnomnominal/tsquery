@@ -17,7 +17,6 @@ import { scope } from './scope';
 import { adjacent, sibling } from './sibling';
 import { wildcard } from './wildcard';
 
-
 export const MATCHERS: TSQueryMatchers = {
     adjacent,
     attribute,
