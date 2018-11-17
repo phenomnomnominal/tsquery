@@ -5,4 +5,5 @@ export const nestedFunctions = `
         }
         return 'a';
     }
+
 `;
