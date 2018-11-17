@@ -12,14 +12,14 @@ const CLASS_MATCHERS: TSQueryMatchers = {
     statement
 };
 
-export function classs (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, options: TSQueryOptions): boolean {
+export function classs (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, scope: Node, options: TSQueryOptions): boolean {
     if (!getProperties(node).kindName) {
         return false;
     }
 
     const matcher = CLASS_MATCHERS[selector.name.toLowerCase()];
     if (matcher) {
-        return matcher(node, selector, ancestry, options);
+        return matcher(node, selector, ancestry, scope, options);
     }
 
     throw new Error(`Unknown class name: ${selector.name}`);

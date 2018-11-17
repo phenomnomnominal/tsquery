@@ -11,7 +11,7 @@
     "noUnusedParameters": true,
     "pretty": true,
     "sourceMap": true,
-    "strict": true,
+    "strict": false,
     "target": "ES5",
     "outDir": "./dist",
     "typeRoots": [

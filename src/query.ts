@@ -9,5 +9,5 @@ export function query <T extends Node = Node> (ast: string | Node, selector: str
     if (typeof ast === 'string') {
         ast = createAST(ast);
     }
-    return match<T>(ast, parse(selector), options);
+    return match<T>(ast, parse(selector), ast, options);
 }

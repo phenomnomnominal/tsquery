@@ -22,7 +22,7 @@ export type TSQueryAttributeOperators = {
     [key: string]: TSQueryAttributeOperator
 };
 
-export type TSQueryMatcher = (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, options: TSQueryOptions) => boolean;
+export type TSQueryMatcher = (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, scope: Node, options: TSQueryOptions) => boolean;
 export type TSQueryMatchers = {
     [key: string]: TSQueryMatcher;
 };

@@ -4,11 +4,11 @@ import { findMatches } from '../match';
 import { traverseChildren } from '../traverse';
 import { TSQueryOptions, TSQuerySelectorNode } from '../tsquery-types';
 
-export function has (node: Node, selector: TSQuerySelectorNode, _: Array<Node>, options: TSQueryOptions): boolean {
+export function has (node: Node, selector: TSQuerySelectorNode, _: Array<Node>, scope: Node, options: TSQueryOptions): boolean {
     const collector: Array<Node> = [];
     selector.selectors.forEach(childSelector => {
         traverseChildren(node, (childNode: Node, ancestry: Array<Node>) => {
-            if (findMatches(childNode, childSelector, ancestry)) {
+            if (findMatches(childNode, childSelector, ancestry, scope)) {
                 collector.push(childNode);
             }
         }, options);
