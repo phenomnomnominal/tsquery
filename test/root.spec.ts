@@ -26,7 +26,6 @@ describe('tsquery:', () => {
             expect(result.length).to.equal(1);
             expect(result[0].kind).to.equal(SyntaxKind.FunctionDeclaration);
             expect((result[0] as FunctionDeclaration).name.text).to.eq('a');
-            
         });
 
         it('Should find all the function inside root level from a child', () => {
@@ -39,9 +38,6 @@ describe('tsquery:', () => {
             expect((result[0] as FunctionDeclaration).name.text).to.eq('a');
             expect(result[1].kind).to.equal(SyntaxKind.FunctionDeclaration);
             expect((result[1] as FunctionDeclaration).name.text).to.eq('b');
-            
         });
-
-        
     });
 });
