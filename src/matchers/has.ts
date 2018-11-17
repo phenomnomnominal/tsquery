@@ -1,17 +1,27 @@
 // Dependencies:
 import { Node } from 'typescript';
 import { findMatches } from '../match';
-import { traverseChildren } from '../traverse';
+import { traverse } from '../traverse';
 import { TSQueryOptions, TSQuerySelectorNode } from '../tsquery-types';
 
-export function has (node: Node, selector: TSQuerySelectorNode, _: Array<Node>, options: TSQueryOptions): boolean {
+export function has (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, {}: Node, {}: TSQueryOptions): boolean {
     const collector: Array<Node> = [];
-    selector.selectors.forEach(childSelector => {
-        traverseChildren(node, (childNode: Node, ancestry: Array<Node>) => {
-            if (findMatches(childNode, childSelector, ancestry)) {
+    const parent = ancestry[0];
+    let a: Array<Node> = [];
+    for (let i = 0; i < selector.selectors.length; ++i) {
+        a = ancestry.slice(parent ? 1 : 0);
+        traverse(parent || node, {
+            enter (childNode: Node, parentNode: Node | null): void {
+                if (parentNode == null) { return; }
+                a.unshift(parentNode);
+                if (findMatches(childNode, selector.selectors[i], a, node)) {
                 collector.push(childNode);
-            }
-        }, options);
-    });
-    return collector.length > 0;
+                }
+            },
+            leave (): void { a.shift(); },
+            visitAllChildren: false
+        });
+    }
+    return collector.length !== 0;
+
 }

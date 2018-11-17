@@ -25,7 +25,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "esquery": "^1.0.1"
+    "esquery-scope": "^1.1.0"
   },
   "peerDependencies": {
     "typescript": "^3"

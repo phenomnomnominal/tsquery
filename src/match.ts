@@ -4,14 +4,20 @@ import { MATCHERS } from './matchers';
 import { traverseChildren } from './traverse';
 import { TSQueryOptions, TSQuerySelectorNode } from './tsquery-types';
 
-export function match <T extends Node = Node> (node: Node, selector: TSQuerySelectorNode, options: TSQueryOptions = {}): Array<T> {
+export function match <T extends Node = Node> (node: Node, selector: TSQuerySelectorNode, scope: Node, options: TSQueryOptions = {}): Array<T> {
     const results: Array<T> = [];
     if (!selector) {
         return results;
     }
 
+    if (selector.left) {
+        if (selector.left.type as any === 'root') {
+            node = getRootNode(node);
+        }
+    }
+
     traverseChildren(node, (childNode: Node, ancestry: Array<Node>) => {
-        if (findMatches(childNode, selector, ancestry, options)) {
+        if (findMatches(childNode, selector, ancestry, scope, options)) {
             results.push(childNode as T);
         }
     }, options);
@@ -19,7 +25,7 @@ export function match <T extends Node = Node> (node: Node, selector: TSQuerySele
     return results;
 }
 
-export function findMatches (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node> = [], options: TSQueryOptions = {}): boolean {
+export function findMatches (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node> = [], scope: Node, options: TSQueryOptions = {}): boolean {
     if (!selector) {
         return true;
     }
@@ -29,8 +35,15 @@ export function findMatches (node: Node, selector: TSQuerySelectorNode, ancestry
 
     const matcher = MATCHERS[selector.type];
     if (matcher) {
-        return matcher(node, selector, ancestry, options);
+        return matcher(node, selector, ancestry, scope, options);
     }
 
     throw new Error(`Unknown selector type: ${selector.type}`);
+}
+
+function getRootNode(node: Node): Node {
+    while (node.parent) {
+        node = node.parent;
+    }
+    return node;
 }

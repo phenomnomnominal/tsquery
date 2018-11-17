@@ -8,7 +8,7 @@ export type TSQueryApi = {
    <T extends Node = Node> (ast: string | Node, selector: string, options?: TSQueryOptions): Array<T>;
    ast (source: string, fileName?: string, scriptKind?: ScriptKind): SourceFile;
    map (ast: SourceFile, selector: string, nodeTransformer: TSQueryNodeTransformer, options?: TSQueryOptions): SourceFile;
-   match <T extends Node = Node> (ast: Node, selector: TSQuerySelectorNode, options?: TSQueryOptions): Array<T>;
+   match <T extends Node = Node> (ast: Node, selector: TSQuerySelectorNode, node: Node, options?: TSQueryOptions): Array<T>;
    parse (selector: string, options?: TSQueryOptions): TSQuerySelectorNode;
    project (configFilePath: string): Array<SourceFile>;
    query <T extends Node = Node> (ast: string | Node, selector: string, options?: TSQueryOptions): Array<T>;
@@ -22,7 +22,7 @@ export type TSQueryAttributeOperators = {
     [key: string]: TSQueryAttributeOperator
 };
 
-export type TSQueryMatcher = (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, options: TSQueryOptions) => boolean;
+export type TSQueryMatcher = (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, scope: Node, options: TSQueryOptions) => boolean;
 export type TSQueryMatchers = {
     [key: string]: TSQueryMatcher;
 };
