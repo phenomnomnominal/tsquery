@@ -5,3 +5,4 @@ export * from './simple-function';
 export * from './simple-program';
 export * from './statement';
 export * from './jsx';
+export * from './nested-functions';
