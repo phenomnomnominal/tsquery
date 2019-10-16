@@ -3,6 +3,7 @@ import { expect } from './index';
 
 // Dependencies:
 import { BinaryExpression, Block, CallExpression, ExpressionStatement, FunctionDeclaration, IfStatement, VariableDeclaration, VariableStatement } from 'typescript';
+import * as ts from 'typescript';
 import { conditional, simpleFunction, simpleProgram } from './fixtures';
 
 // Under test:
@@ -61,6 +62,16 @@ describe('tsquery:', () => {
                 ast.statements[1],
                 (ast.statements[1] as IfStatement).elseStatement as IfStatement
             ]);
+        });
+
+        it('should support synthesized nodes', () => {
+            const ast = ts.createVariableStatement(
+                undefined,
+                [ts.createVariableDeclaration('answer', undefined, ts.createLiteral(42))]
+            );
+            const result = tsquery(ast, '[text="answer"]');
+
+            expect(result).to.deep.equal([ast.declarationList.declarations[0].name]);
         });
     });
 
