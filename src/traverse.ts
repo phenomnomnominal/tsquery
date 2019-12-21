@@ -75,18 +75,20 @@ export function getVisitorKeys(node: Node | null): Array<string> {
 
 const propertiesMap = new WeakMap<Node, TSQueryProperties>();
 
-export function getProperties(node: Node): TSQueryProperties {
-  let properties = propertiesMap.get(node);
-  if (!properties) {
-    properties = {
-      kindName: syntaxKindName(node.kind),
-      text: hasKey(node, 'text') ? node.text : node.getText()
-    };
-    if (node.kind === SyntaxKind.Identifier) {
-      properties.name = hasKey(node, 'name') ? node.name : properties.text;
-    }
-    if (LITERAL_KINDS.includes(node.kind)) {
-      properties.value = PARSERS[node.kind](properties);
+export function getProperties (node: Node): TSQueryProperties {
+    let properties = propertiesMap.get(node);
+    if (!properties) {
+        properties = {
+            kindName: syntaxKindName(node.kind),
+            text: hasKey(node, 'text') ? node.text : getTextIfNotSynthesized(node)
+        };
+        if (node.kind === SyntaxKind.Identifier) {
+            properties.name = hasKey(node, 'name') ? node.name : properties.text;
+        }
+        if (LITERAL_KINDS.includes(node.kind)) {
+            properties.value = PARSERS[node.kind](properties);
+        }
+        propertiesMap.set(node, properties);
     }
     propertiesMap.set(node, properties);
   }
@@ -98,4 +100,13 @@ function hasKey<K extends { [key: string]: any }>(
   property: keyof K
 ): node is K {
   return node[property] != null;
+}
+
+function getTextIfNotSynthesized (node: Node): string {
+    // getText cannot be called on synthesized nodes - those created using
+    // TypeScript's createXxx functions - because its implementation relies
+    // upon a node's position. See:
+    // https://github.com/microsoft/TypeScript/blob/a8bea77d1efe4984e573760770b78486a5488366/src/services/services.ts#L81-L87
+    // https://github.com/microsoft/TypeScript/blob/a685ac426c168a9d8734cac69202afc7cb022408/src/compiler/utilities.ts#L8169-L8173
+    return !(node.pos >= 0) ? '' : node.getText();
 }
