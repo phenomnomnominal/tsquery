@@ -13,6 +13,6 @@ for (const name of Object.keys(SyntaxKind).filter(x =>
   }
 }
 
-export function syntaxKindName (kind: SyntaxKind): string {
+export function syntaxKindName(kind: SyntaxKind): string {
   return syntaxKindMap[kind];
 }

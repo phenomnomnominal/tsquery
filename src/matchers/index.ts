@@ -16,19 +16,19 @@ import { adjacent, sibling } from './sibling';
 import { wildcard } from './wildcard';
 
 export const MATCHERS: TSQueryMatchers = {
-    adjacent,
-    attribute,
-    child,
-    compound: matches('every'),
-    'class': classs,
-    descendant,
-    field,
-    'nth-child': nthChild,
-    'nth-last-child': nthLastChild,
-    has,
-    identifier,
-    matches: matches('some'),
-    not,
-    sibling,
-    wildcard
+  adjacent,
+  attribute,
+  child,
+  compound: matches('every'),
+  class: classs,
+  descendant,
+  field,
+  'nth-child': nthChild,
+  'nth-last-child': nthLastChild,
+  has,
+  identifier,
+  matches: matches('some'),
+  not,
+  sibling,
+  wildcard
 };

@@ -2,9 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "es2017",
-    ],
+    "lib": ["es2017"],
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noUnusedLocals": true,
@@ -14,13 +12,7 @@
     "strict": true,
     "target": "ES5",
     "outDir": "./dist",
-    "typeRoots": [
-      "./node_modules/@types/"
-    ]
+    "typeRoots": ["./node_modules/@types/"]
   },
-  "exclude": [
-    "./node_modules/*",
-    "./dist/*",
-    "./examples/*"
-  ]
+  "exclude": ["./node_modules/*", "./dist/*", "./examples/*", "./test/*"]
 }

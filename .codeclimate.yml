@@ -1,12 +1,12 @@
-version: "2"
+version: '2'
 plugins:
   duplication:
     enabled: true
     exclude_patterns:
-    - "**/*.spec.ts"
+      - '**/*.spec.ts'
     config:
       languages:
-      - typescript
+        - typescript
   tslint:
     enabled: true
     config: tslint.json
