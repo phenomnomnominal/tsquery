@@ -1,5 +1,5 @@
 // Dependencies:
-import { Node, ScriptKind, SourceFile, SyntaxKind } from "typescript";
+import { Node, ScriptKind, SourceFile, SyntaxKind } from 'typescript';
 
 export type TSQueryNodeTransformer = (node: Node) => Node | null | undefined;
 export type TSQueryStringTransformer = (
@@ -41,7 +41,7 @@ export type TSQueryApi = {
   syntaxKindName(node: SyntaxKind): string;
 };
 
-export type TSQueryAttributeOperatorType = "regexp" | "literal" | "type";
+export type TSQueryAttributeOperatorType = 'regexp' | 'literal' | 'type';
 export type TSQueryAttributeOperator = (
   obj: any,
   value: any,
@@ -65,7 +65,7 @@ export type TSQueryProperties = {
   // We convert the `kind` property to its string name from the `SyntaxKind` enum:
   // Some nodes have more that one applicable `SyntaxKind`...
   kindName: string;
-  // We add a "name" property to `Node`s with `type` `SyntaxKind.Identifier`:
+  // We add a 'name' property to `Node`s with `type` `SyntaxKind.Identifier`:
   name?: string;
   // We automatically call `getText()` so it can be selected on:
   text: string;
@@ -79,16 +79,16 @@ export type TSQueryOptions = {
 
 export type TSQuerySelectorNode = {
   [key: string]:
-    | TSQuerySelectorNode
-    | Array<TSQuerySelectorNode>
-    | RegExp
-    | boolean
-    | number
-    | string;
+  | TSQuerySelectorNode
+  | Array<TSQuerySelectorNode>
+  | RegExp
+  | boolean
+  | number
+  | string;
   index: TSQuerySelectorNode;
   left: TSQuerySelectorNode;
   name: string;
-  operator: "=" | "!=" | "<=" | "<" | ">=" | ">";
+  operator: '=' | '!=' | '<=' | '<' | '>=' | '>';
   right: TSQuerySelectorNode;
   selectors: Array<TSQuerySelectorNode>;
   subject: boolean;
