@@ -59,5 +59,23 @@ console.log('bar');
 
             `.trim());
         });
+
+        it('should replace with an empty string', () => {
+            const text = `
+
+console.log('foo');
+console.log('bar');
+// console.log('baz');
+
+            `.trim();
+            const result = tsquery.replace(text, 'ExpressionStatement:has(Identifier[name="console"])', () => '');
+            expect(result.trim()).to.equal(`
+
+
+
+// console.log('baz');
+
+            `.trim());
+        });
     });
 });
