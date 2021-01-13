@@ -9,7 +9,7 @@ export function replace (source: string, selector: string, stringTransformer: TS
     const reversedReplacements = replacements.reverse();
     let result = source;
     reversedReplacements.forEach((replacement, index) => {
-        if (replacement) {
+        if (replacement != null) {
             const match = reversedMatches[index];
             result = `${result.substr(0, match.getStart())}${replacement}${result.substr(match.getEnd())}`;
         }
