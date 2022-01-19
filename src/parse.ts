@@ -7,7 +7,16 @@ import { TSQuerySelectorNode } from './tsquery-types';
 const IDENTIFIER_QUERY = 'identifier';
 
 export function parse (selector: string): TSQuerySelectorNode {
-    return validateParse(esquery.parse(selector));
+    const cleanSelector = stripComments(stripNewLines(selector));
+    return validateParse(esquery.parse(cleanSelector));
+}
+
+function stripComments (selector: string): string {
+    return selector.replace(/\/\*[\w\W]*\*\//g, '');
+}
+
+function stripNewLines (selector: string): string {
+    return selector.replace(/\n/g, '');
 }
 
 function validateParse (selector: TSQuerySelectorNode): TSQuerySelectorNode {
@@ -25,7 +34,7 @@ function validateParse (selector: TSQuerySelectorNode): TSQuerySelectorNode {
         validateParse(selector.right);
     }
 
-    if (selector.type as string === IDENTIFIER_QUERY) {
+    if ((selector.type as string) === IDENTIFIER_QUERY) {
         if (SyntaxKind[selector.value as any] == null) {
             throw SyntaxError(`"${selector.value}" is not a valid TypeScript Node kind.`);
         }
