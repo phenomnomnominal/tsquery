@@ -19,6 +19,45 @@ describe('tsquery:', () => {
         });
     });
 
+    describe('tsquery.parse - comments/new lines:', () => {
+        it('should parse an empty comment', () => {
+            const result = tsquery.parse('/**/');
+
+            expect(result).to.equal(undefined);
+        });
+
+        it('should parse a whitespace comment', () => {
+            const result = tsquery.parse('/*      */');
+
+            expect(result).to.equal(undefined);
+        });
+
+        it('should parse a multi-line comment', () => {
+            const result = tsquery.parse(`
+/**
+ * this
+ * is
+ * several
+ * lines
+ */
+            `);
+
+            expect(result).to.equal(undefined);
+        });
+
+        it('should parse a commented multi-line query', () => {
+            const result = tsquery.parse(`
+/* title attribute */
+JsxAttribute[name.name=/title|label|alt/] StringLiteral,
+
+/* JsxText which content is not only whitespace */
+JsxText:not([text=/^\s+$/])
+            `);
+
+            expect(result.selectors).to.have.length(2);
+        });
+    });
+
     describe('tsquery.parse - queryies with surrounding whitespace:', () => {
         it('should parse a query with some leading whitespace', () => {
             const result = tsquery.parse(' Identifier');
