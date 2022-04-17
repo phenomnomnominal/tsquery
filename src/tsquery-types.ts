@@ -1,7 +1,7 @@
 // Dependencies:
-import { Node, ScriptKind, SourceFile, SyntaxKind } from 'typescript';
+import { Node, ScriptKind, SourceFile, SyntaxKind, VisitResult } from 'typescript';
 
-export type TSQueryNodeTransformer = (node: Node) => Node | null | undefined;
+export type TSQueryNodeTransformer = (node: Node) => VisitResult<Node>;
 export type TSQueryStringTransformer = (
   node: Node
 ) => string | null | undefined;

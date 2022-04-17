@@ -59,12 +59,31 @@ console.log('bar');
 // console.log('baz');
 
             `.trim());
-            const result = tsquery.map(ast, 'Identifier[name="console"]', () => null);
+            const result = tsquery.map(ast, 'Identifier[name="console"]', (node) => node);
             const printer = createPrinter(printerOptions);
             expect(printer.printFile(result).trim()).to.equal(`
 
 console.log('foo');
 console.log('bar');
+// console.log('baz');
+
+            `.trim());
+        });
+
+        it('should handle a removal transformer', () => {
+            const ast = tsquery.ast(`
+
+console.log('foo');
+console.log('bar');
+// console.log('baz');
+
+            `.trim());
+            const result = tsquery.map(ast, 'StringLiteral', () => undefined);
+            const printer = createPrinter(printerOptions);
+            expect(printer.printFile(result).trim()).to.equal(`
+
+console.log();
+console.log();
 // console.log('baz');
 
             `.trim());

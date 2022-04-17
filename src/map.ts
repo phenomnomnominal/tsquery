@@ -1,5 +1,5 @@
 // Dependencies:
-import { Node, SourceFile, transform, TransformationContext, Transformer, TransformerFactory, visitEachChild,  visitNode } from 'typescript';
+import { Node, SourceFile, transform, TransformationContext, Transformer, TransformerFactory, visitEachChild,  visitNode, VisitResult } from 'typescript';
 import { query } from './query';
 import { TSQueryNodeTransformer, TSQueryOptions } from './tsquery-types';
 
@@ -16,10 +16,9 @@ export function map (ast: SourceFile, selector: string, nodeTransformer: TSQuery
 function createTransformer (results: Array<Node>, nodeTransformer: TSQueryNodeTransformer): TransformerFactory<Node> {
     return function (context: TransformationContext): Transformer<Node> {
         return function (rootNode: Node): Node {
-            function visit (node: Node): Node {
+            function visit (node: Node): VisitResult<Node> {
                 if (results.includes(node)) {
-                    const replacement = nodeTransformer(node);
-                    return replacement ? replacement : node;
+                    return nodeTransformer(node);
                 }
                 return visitEachChild(node, visit, context);
             }
