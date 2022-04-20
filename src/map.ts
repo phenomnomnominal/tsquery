@@ -18,7 +18,8 @@ function createTransformer (results: Array<Node>, nodeTransformer: TSQueryNodeTr
         return function (rootNode: Node): Node {
             function visit (node: Node): VisitResult<Node> {
                 if (results.includes(node)) {
-                    return nodeTransformer(node);
+                    const replacement = nodeTransformer(node);
+                    return (replacement != node) ? replacement : visitEachChild(node, visit, context);
                 }
                 return visitEachChild(node, visit, context);
             }
