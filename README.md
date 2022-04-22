@@ -16,6 +16,9 @@ TSQuery is a port of the ESQuery API for TypeScript! TSQuery allows you to query
 npm install @phenomnomnominal/tsquery --save-dev
 ```
 
+## Upgrading from version 4.x.x to 5.x.x
+- Update all your calls to `tsquery.map()` to make sure they match the new contract. For more information, check https://github.com/phenomnomnominal/tsquery/pull/76.
+
 ## Examples
 
 Say we want to select all instances of an identifier with name "Animal", e.g. the identifier in the `class` declaration, and the identifier in the `extends` declaration.
