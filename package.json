@@ -28,7 +28,7 @@
     "esquery": "^1.4.0"
   },
   "peerDependencies": {
-    "typescript": "^3 || ^4"
+    "typescript": "^3 || ^4 || ^5"
   },
   "files": [
     "dist/src"
