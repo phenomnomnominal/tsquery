@@ -1,6 +1,6 @@
 {
   "name": "@phenomnomnominal/tsquery",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Query TypeScript ASTs with the esquery API!",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -28,7 +28,7 @@
     "esquery": "^1.4.0"
   },
   "peerDependencies": {
-    "typescript": "^3 || ^4"
+    "typescript": "^3 || ^4 || ^5"
   },
   "files": [
     "dist/src"
