@@ -1,0 +1,4 @@
+{
+    "typescript.format.semicolons": "ignore",
+    "editor.tabSize": 2
+}
