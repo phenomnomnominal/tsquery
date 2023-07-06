@@ -6,20 +6,20 @@ import { TSQuerySelectorNode } from './tsquery-types';
 // Constants:
 const IDENTIFIER_QUERY = 'identifier';
 
-export function parse(selector: string): TSQuerySelectorNode {
+export function parse (selector: string): TSQuerySelectorNode {
     const cleanSelector = stripComments(stripNewLines(selector));
     return validateParse(esquery.parse(cleanSelector));
 }
 
-function stripComments(selector: string): string {
+function stripComments (selector: string): string {
     return selector.replace(/\/\*[\w\W]*\*\//g, '');
 }
 
-function stripNewLines(selector: string): string {
+function stripNewLines (selector: string): string {
     return selector.replace(/\n/g, '');
 }
 
-function validateParse(selector: TSQuerySelectorNode): TSQuerySelectorNode {
+function validateParse (selector: TSQuerySelectorNode): TSQuerySelectorNode {
     if (!selector) {
         return selector;
     }

@@ -7,38 +7,38 @@ export type TSQueryStringTransformer = (
 ) => string | null | undefined;
 
 export type TSQueryApi = {
-    <T extends Node = Node>(
+    <T extends Node = Node> (
         ast: string | Node,
         selector: string,
         options?: TSQueryOptions
     ): Array<T>;
-    ast(source: string, fileName?: string, scriptKind?: ScriptKind): SourceFile;
-    map(
+    ast (source: string, fileName?: string, scriptKind?: ScriptKind): SourceFile;
+    map (
         ast: SourceFile,
         selector: string,
         nodeTransformer: TSQueryNodeTransformer,
         options?: TSQueryOptions
     ): SourceFile;
-    match<T extends Node = Node>(
+    match<T extends Node = Node> (
         ast: Node,
         selector: TSQuerySelectorNode,
         options?: TSQueryOptions
     ): Array<T>;
-    parse(selector: string, options?: TSQueryOptions): TSQuerySelectorNode;
-    project(configFilePath: string): Array<SourceFile>;
-    projectFiles(configFilePath: string): Array<string>;
-    query<T extends Node = Node>(
+    parse (selector: string, options?: TSQueryOptions): TSQuerySelectorNode;
+    project (configFilePath: string): Array<SourceFile>;
+    projectFiles (configFilePath: string): Array<string>;
+    query<T extends Node = Node> (
         ast: string | Node,
         selector: string,
         options?: TSQueryOptions
     ): Array<T>;
-    replace(
+    replace (
         source: string,
         selector: string,
         stringTransformer: TSQueryStringTransformer,
         options?: TSQueryOptions
     ): string;
-    syntaxKindName(node: SyntaxKind): string;
+    syntaxKindName (node: SyntaxKind): string;
 };
 
 export type TSQueryAttributeOperatorType = 'regexp' | 'literal' | 'type';
