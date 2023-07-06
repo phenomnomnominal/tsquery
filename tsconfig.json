@@ -9,11 +9,10 @@
     "noEmitOnError": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "allowSyntheticDefaultImports": true,
     "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2020",
+    "target": "ES5",
     "outDir": "./dist",
     "typeRoots": [
       "./node_modules/@types/"
