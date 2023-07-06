@@ -97,6 +97,7 @@ console.log('bar');
 
             `.trim()
       );
+      //@ts-ignore
       const result = tsquery.map(ast, 'StringLiteral', () => undefined);
       const printer = createPrinter(printerOptions);
       expect(printer.printFile(result).trim()).toEqual(
@@ -123,6 +124,7 @@ console.log();
     it(`should't visit child nodes when an ancestor has been replaced`, () => {
       const ast = tsquery.ast('label1: label2: 1 + 1'.trim());
       let count = 0;
+      //@ts-ignore
       tsquery.map(ast, 'LabeledStatement', () => {
         ++count;
         return undefined;
