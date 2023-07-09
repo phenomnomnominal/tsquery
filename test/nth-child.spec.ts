@@ -1,62 +1,67 @@
-// Dependencies:
-import { Block, IfStatement } from 'typescript';
-import { conditional } from './fixtures';
+import { conditional, simpleFunction } from './fixtures';
 
-// Under test:
-import { tsquery } from '../src/index';
+import { ast, query, tsquery } from '../src/index';
+import { JSDocParameterTag } from 'typescript';
 
 describe('tsquery:', () => {
   describe('tsquery - nth-child:', () => {
     it('should find any nodes that are the first-child of a list of nodes', () => {
       const ast = tsquery.ast(conditional);
-      const result = tsquery(ast, ':first-child');
+      const result = tsquery(ast, 'Identifier:first-child');
 
-      expect(result).toEqual([
-        ast.statements[0],
-        ((ast.statements[0] as IfStatement).thenStatement as Block)
-          .statements[0],
-        ((ast.statements[0] as IfStatement).elseStatement as Block)
-          .statements[0],
-        ((ast.statements[1] as IfStatement).thenStatement as Block)
-          .statements[0],
-        (
-          ((ast.statements[1] as IfStatement).elseStatement as IfStatement)
-            .thenStatement as Block
-        ).statements[0]
+      expect(result.map((r) => r.getText())).toEqual([
+        'x',
+        'foo',
+        'x',
+        'x',
+        'y',
+        'y'
       ]);
     });
 
     it('should find any nodes that are the last-child of a list of nodes', () => {
       const ast = tsquery.ast(conditional);
-      const result = tsquery(ast, ':last-child');
+      const result = tsquery(ast, 'Identifier:last-child');
 
-      expect(result).toEqual([
-        ((ast.statements[0] as IfStatement).thenStatement as Block)
-          .statements[0],
-        ((ast.statements[0] as IfStatement).elseStatement as Block)
-          .statements[0],
-        ast.statements[1],
-        ((ast.statements[1] as IfStatement).thenStatement as Block)
-          .statements[0],
-        (
-          ((ast.statements[1] as IfStatement).elseStatement as IfStatement)
-            .thenStatement as Block
-        ).statements[0]
-      ]);
+      expect(result.map((r) => r.getText())).toEqual(['x']);
     });
 
     it('should find any nodes that are the nth-child of a list of nodes', () => {
       const ast = tsquery.ast(conditional);
-      const result = tsquery(ast, ':nth-child(2)');
+      const result = tsquery(ast, 'Identifier:nth-child(1)');
 
-      expect(result).toEqual([ast.statements[1]]);
+      expect(result.map((r) => r.getText())).toEqual([
+        'x',
+        'foo',
+        'x',
+        'x',
+        'y',
+        'y'
+      ]);
     });
 
     it('should find any nodes that are the nth-last-child of a list of nodes', () => {
       const ast = tsquery.ast(conditional);
-      const result = tsquery(ast, ':nth-last-child(2)');
+      const result = tsquery(ast, 'Identifier:nth-last-child(1)');
 
-      expect(result).toEqual([ast.statements[0]]);
+      expect(result.map((r) => r.getText())).toEqual(['x']);
+    });
+
+    it('should handle JSDoc', () => {
+      const tree = ast(simpleFunction);
+      const result = query<JSDocParameterTag>(
+        tree,
+        'JSDocParameterTag:first-child'
+      );
+
+      expect(result.map((r) => r.comment)).toEqual(['- the x']);
+    });
+
+    it('should handle SourceFiles', () => {
+      const tree = ast('');
+      const result = query<JSDocParameterTag>(tree, 'SourceFile:first-child');
+
+      expect(result).toEqual([]);
     });
   });
 });

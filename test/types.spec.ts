@@ -1,11 +1,9 @@
-// Dependencies:
-import {
+import type {
   ExpressionStatement,
   NoSubstitutionTemplateLiteral,
   TaggedTemplateExpression
 } from 'typescript';
 
-// Under test:
 import { tsquery } from '../src/index';
 import { getProperties } from '../src/traverse';
 

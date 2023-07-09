@@ -1,17 +1,13 @@
-// Dependencies:
-import { createPrinter, factory, NewLineKind } from 'typescript';
+import { factory } from 'typescript';
 
-// Under test:
-import { tsquery } from '../src/index';
-
-const printerOptions = {
-  newLine: NewLineKind.LineFeed
-};
+import { ast, map } from '../src/index';
+import { print } from '../src/print';
+import { literal } from './fixtures';
 
 describe('tsquery:', () => {
   describe('tsquery.map:', () => {
     it('should replace individual AST nodes:', () => {
-      const ast = tsquery.ast(
+      const tree = ast(
         `
 
 console.log('foo');
@@ -20,11 +16,10 @@ console.log('bar');
 
             `.trim()
       );
-      const result = tsquery.map(ast, 'Identifier[name="console"]', () =>
+      const result = map(tree, 'Identifier[name="console"]', () =>
         factory.createIdentifier('logger')
       );
-      const printer = createPrinter(printerOptions);
-      expect(printer.printFile(result).trim()).toEqual(
+      expect(print(result)).toEqual(
         `
 
 logger.log('foo');
@@ -36,7 +31,7 @@ logger.log('bar');
     });
 
     it('should replace multiple AST nodes:', () => {
-      const ast = tsquery.ast(
+      const tree = ast(
         `
 
 console.log('foo');
@@ -45,11 +40,10 @@ console.log('bar');
 
             `.trim()
       );
-      const result = tsquery.map(ast, 'Identifier[name="console"]', () =>
+      const result = map(tree, 'Identifier[name="console"]', () =>
         factory.createPropertyAccessExpression(factory.createThis(), 'logger')
       );
-      const printer = createPrinter(printerOptions);
-      expect(printer.printFile(result).trim()).toEqual(
+      expect(print(result)).toEqual(
         `
 
 this.logger.log('foo');
@@ -61,7 +55,7 @@ this.logger.log('bar');
     });
 
     it('should handle a noop transformer', () => {
-      const ast = tsquery.ast(
+      const tree = ast(
         `
 
 console.log('foo');
@@ -70,13 +64,8 @@ console.log('bar');
 
             `.trim()
       );
-      const result = tsquery.map(
-        ast,
-        'Identifier[name="console"]',
-        (node) => node
-      );
-      const printer = createPrinter(printerOptions);
-      expect(printer.printFile(result).trim()).toEqual(
+      const result = map(tree, 'Identifier[name="console"]', (node) => node);
+      expect(print(result)).toEqual(
         `
 
 console.log('foo');
@@ -88,7 +77,7 @@ console.log('bar');
     });
 
     it('should handle a removal transformer', () => {
-      const ast = tsquery.ast(
+      const tree = ast(
         `
 
 console.log('foo');
@@ -97,9 +86,8 @@ console.log('bar');
 
             `.trim()
       );
-      const result = tsquery.map(ast, 'StringLiteral', () => undefined);
-      const printer = createPrinter(printerOptions);
-      expect(printer.printFile(result).trim()).toEqual(
+      const result = map(tree, 'StringLiteral', () => undefined);
+      expect(print(result)).toEqual(
         `
 
 console.log();
@@ -110,10 +98,16 @@ console.log();
       );
     });
 
+    it(`shouldn't let you replace a SourceFile`, () => {
+      const tree = ast(literal);
+      const result = map(tree, 'SourceFile', () => undefined);
+      expect(print(result)).toEqual(literal);
+    });
+
     it('should visit child nodes whose ancestors also match the selector', () => {
-      const ast = tsquery.ast('label1: label2: 1 + 1'.trim());
+      const tree = ast('label1: label2: 1 + 1'.trim());
       let count = 0;
-      tsquery.map(ast, 'LabeledStatement', (node) => {
+      map(tree, 'LabeledStatement', (node) => {
         ++count;
         return node;
       });
@@ -121,9 +115,9 @@ console.log();
     });
 
     it(`should't visit child nodes when an ancestor has been replaced`, () => {
-      const ast = tsquery.ast('label1: label2: 1 + 1'.trim());
+      const tree = ast('label1: label2: 1 + 1'.trim());
       let count = 0;
-      tsquery.map(ast, 'LabeledStatement', () => {
+      map(tree, 'LabeledStatement', () => {
         ++count;
         return undefined;
       });

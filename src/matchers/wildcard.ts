@@ -1,3 +1,3 @@
-export function wildcard (): boolean {
-    return true;
+export function wildcard(): boolean {
+  return true;
 }

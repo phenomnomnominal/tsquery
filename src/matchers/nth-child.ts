@@ -1,31 +1,48 @@
-// Dependencies:
-import { Node } from 'typescript';
-import { findMatches } from '../match';
-import { getVisitorKeys } from '../traverse';
-import { TSQuerySelectorNode } from '../tsquery-types';
+import type {
+  BinarySelector,
+  SubjectSelector,
+  NthChild,
+  NthLastChild
+} from 'esquery';
+import type { Node } from 'typescript';
 
-export function nthChild (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>): boolean {
-    return findMatches(node, selector.right, ancestry) &&
-        findNthChild(node, ancestry, () => (selector.index.value as number) - 1);
+import { findMatches } from '../traverse';
+
+export function nthChild(
+  node: Node,
+  selector: SubjectSelector,
+  ancestors: Array<Node>
+): boolean {
+  const { right } = selector as BinarySelector;
+  if (right && !findMatches(node, right, ancestors)) {
+    return false;
+  }
+  return findNthChild(node, () => (selector as NthChild).index.value - 1);
 }
 
-export function nthLastChild (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>): boolean {
-    return findMatches(node, selector.right, ancestry) &&
-        findNthChild(node, ancestry, (length: number) => length - (selector.index.value as number));
+export function nthLastChild(
+  node: Node,
+  selector: SubjectSelector,
+  ancestors: Array<Node>
+): boolean {
+  const { right } = selector as BinarySelector;
+  if (right && !findMatches(node, right, ancestors)) {
+    return false;
+  }
+  return findNthChild(
+    node,
+    (length: number) => length - (selector as NthLastChild).index.value
+  );
 }
 
-function findNthChild (node: Node, ancestry: Array<Node>, getIndex: (length: number) => number): boolean {
-    const [parent] = ancestry;
-    if (!parent) {
-        return false;
-    }
-    const keys = getVisitorKeys(node.parent || null);
-    return keys.some(key => {
-        const prop = (node.parent as any)[key];
-        if (Array.isArray(prop)) {
-            const index = prop.indexOf(node);
-            return index >= 0 && index === getIndex(prop.length);
-        }
-        return false;
-    });
+function findNthChild(
+  node: Node,
+  getIndex: (length: number) => number
+): boolean {
+  if (!node.parent) {
+    return false;
+  }
+
+  const children = node.parent.getChildren();
+  return children.indexOf(node) === getIndex(children.length);
 }

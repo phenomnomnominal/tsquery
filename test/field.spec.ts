@@ -1,16 +1,12 @@
-// Dependencies:
-import {
+import type {
   Block,
   CallExpression,
   ExpressionStatement,
   IfStatement,
-  VariableDeclaration,
-  VariableDeclarationList,
   VariableStatement
 } from 'typescript';
 import { conditional, simpleProgram } from './fixtures';
 
-// Under test:
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
@@ -56,18 +52,10 @@ describe('tsquery:', () => {
       const result = tsquery(ast, '.declarations.initializer');
 
       expect(result).toEqual([
-        (
-          (
-            (ast.statements[0] as VariableStatement)
-              .declarationList as VariableDeclarationList
-          ).declarations[0] as VariableDeclaration
-        ).initializer,
-        (
-          (
-            (ast.statements[1] as VariableStatement)
-              .declarationList as VariableDeclarationList
-          ).declarations[0] as VariableDeclaration
-        ).initializer
+        (ast.statements[0] as VariableStatement).declarationList.declarations[0]
+          .initializer,
+        (ast.statements[1] as VariableStatement).declarationList.declarations[0]
+          .initializer
       ]);
     });
   });

@@ -1,43 +1,44 @@
-// Dependencies:
-import {
+import type {
   BinaryExpression,
   Block,
   CallExpression,
   ExpressionStatement,
   FunctionDeclaration,
   IfStatement,
-  VariableDeclaration,
+  JSDoc,
+  JSDocParameterTag,
+  Node,
   VariableStatement
 } from 'typescript';
-import * as ts from 'typescript';
+
 import { conditional, simpleFunction, simpleProgram } from './fixtures';
 
-// Under test:
-import { tsquery } from '../src/index';
+import { factory } from 'typescript';
+import { tsquery, ast, query } from '../src/index';
 import { getProperties } from '../src/traverse';
 
 describe('tsquery:', () => {
   describe('tsquery - attribute:', () => {
     it('should find any nodes with a property with a value that matches a specific value', () => {
-      const ast = tsquery.ast(conditional);
-      const result = tsquery(ast, '[name="x"]');
+      const tree = ast(conditional);
+      const result = query(tree, '[name="x"]');
 
       expect(result).toEqual([
-        ((ast.statements[0] as IfStatement).expression as BinaryExpression)
+        ((tree.statements[0] as IfStatement).expression as BinaryExpression)
           .left,
         (
           (
-            ((ast.statements[0] as IfStatement).elseStatement as Block)
+            ((tree.statements[0] as IfStatement).elseStatement as Block)
               .statements[0] as ExpressionStatement
           ).expression as BinaryExpression
         ).left,
         (
           (
-            ((ast.statements[1] as IfStatement).expression as BinaryExpression)
+            ((tree.statements[1] as IfStatement).expression as BinaryExpression)
               .left as BinaryExpression
           ).left as BinaryExpression
         ).left,
-        ((ast.statements[1] as IfStatement).expression as BinaryExpression)
+        ((tree.statements[1] as IfStatement).expression as BinaryExpression)
           .right
       ]);
     });
@@ -104,11 +105,11 @@ describe('tsquery:', () => {
     });
 
     it('should support synthesized nodes', () => {
-      const ast = ts.factory.createVariableStatement(undefined, [
-        ts.factory.createVariableDeclaration(
+      const ast = factory.createVariableStatement(undefined, [
+        factory.createVariableDeclaration(
           'answer',
           undefined,
-          ts.factory.createLiteralTypeNode(ts.factory.createNumericLiteral(42))
+          factory.createLiteralTypeNode(factory.createNumericLiteral(42))
         )
       ]);
       const result = tsquery(ast, '[text="answer"]');
@@ -122,16 +123,18 @@ describe('tsquery:', () => {
       const ast = tsquery.ast(simpleFunction);
       const result = tsquery(ast, '[name=/x|foo/]');
 
+      const [statement] = ast.statements;
+
       expect(result).toEqual([
-        (ast.statements[0] as FunctionDeclaration).name,
-        (ast.statements[0] as FunctionDeclaration).parameters[0].name,
+        hasJSDoc(statement) &&
+          (statement.jsDoc[0].tags?.[0] as JSDocParameterTag).name,
+        (statement as FunctionDeclaration).name,
+        (statement as FunctionDeclaration).parameters[0].name,
         (
           (
-            (
-              ((ast.statements[0] as FunctionDeclaration).body as Block)
-                .statements[0] as VariableStatement
-            ).declarationList.declarations[0] as VariableDeclaration
-          ).initializer as BinaryExpression
+            ((statement as FunctionDeclaration).body as Block)
+              .statements[0] as VariableStatement
+          ).declarationList.declarations[0].initializer as BinaryExpression
         ).left
       ]);
     });
@@ -140,7 +143,15 @@ describe('tsquery:', () => {
       const ast = tsquery.ast(simpleFunction);
       const result = tsquery(ast, '[name!=/x|y|z/]');
 
-      expect(result).toEqual([(ast.statements[0] as FunctionDeclaration).name]);
+      const [statement] = ast.statements;
+
+      expect(result).toEqual(
+        hasJSDoc(statement) && [
+          statement.jsDoc[0].tags?.[0].tagName,
+          statement.jsDoc[0].tags?.[1].tagName,
+          (ast.statements[0] as FunctionDeclaration).name
+        ]
+      );
     });
 
     it('should find any nodes with an attribute with a value that is greater than or equal to a value', () => {
@@ -203,3 +214,8 @@ describe('tsquery:', () => {
     });
   });
 });
+
+type WithJSDoc = { jsDoc: Array<JSDoc> };
+function hasJSDoc(node: unknown): node is Node & WithJSDoc {
+  return !!(node as WithJSDoc).jsDoc;
+}

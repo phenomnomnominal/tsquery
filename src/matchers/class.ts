@@ -1,52 +1,74 @@
-// Dependencies:
-import { Node } from 'typescript';
-import { getProperties } from '../traverse';
-import { TSQueryMatchers, TSQueryOptions, TSQuerySelectorNode } from '../tsquery-types';
+import type { Class, Selector } from 'esquery';
+import type { Node } from 'typescript';
+import type { Properties } from '../types';
 
-// Constants:
-const CLASS_MATCHERS: TSQueryMatchers = {
-    declaration,
-    expression,
-    'function': fn,
-    pattern,
-    statement
+import { getProperties } from '../traverse';
+
+type ClassMatcher = (
+  node: Node,
+  properties: Properties,
+  selector: Selector,
+  ancestors: Array<Node>
+) => boolean;
+export type ClassMatchers = {
+  [Key in Class['name']]: ClassMatcher;
 };
 
-export function classs (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>, options: TSQueryOptions): boolean {
-    if (!getProperties(node).kindName) {
-        return false;
-    }
+const CLASS_MATCHERS: ClassMatchers = {
+  declaration,
+  expression,
+  function: functionMatcher,
+  pattern,
+  statement
+};
 
-    const matcher = CLASS_MATCHERS[selector.name.toLowerCase()];
-    if (matcher) {
-        return matcher(node, selector, ancestry, options);
-    }
+export function classMatcher(
+  node: Node,
+  selector: Class,
+  ancestors: Array<Node>
+): boolean {
+  const properties = getProperties(node);
+  if (!properties.kindName) {
+    return false;
+  }
 
-    throw new Error(`Unknown class name: ${selector.name}`);
+  const matcher = CLASS_MATCHERS[selector.name];
+  if (matcher) {
+    return matcher(node, properties, selector, ancestors);
+  }
+
+  throw new SyntaxError(`Unknown class name: "${selector.name}"`);
 }
 
-function declaration (node: Node): boolean {
-    return getProperties(node).kindName.endsWith('Declaration');
+function declaration(_: Node, properties: Properties): boolean {
+  return properties.kindName.endsWith('Declaration');
 }
 
-function expression (node: Node): boolean {
-    const { kindName } = getProperties(node);
-    return kindName.endsWith('Expression') ||
-        kindName.endsWith('Literal') ||
-        (kindName === 'Identifier' && !!node.parent && getProperties(node.parent).kindName !== 'MetaProperty') ||
-        kindName === 'MetaProperty';
+function expression(node: Node, properties: Properties): boolean {
+  const { kindName } = properties;
+  return (
+    kindName.endsWith('Expression') ||
+    kindName.endsWith('Literal') ||
+    (kindName === 'Identifier' &&
+      !!node.parent &&
+      getProperties(node.parent).kindName !== 'MetaProperty') ||
+    kindName === 'MetaProperty'
+  );
 }
 
-function fn (node: Node): boolean {
-    const { kindName } = getProperties(node);
-    return kindName.startsWith('Function') ||
-        kindName === 'ArrowFunction';
+function functionMatcher(_: Node, properties: Properties): boolean {
+  const { kindName } = properties;
+  return kindName.startsWith('Function') || kindName === 'ArrowFunction';
 }
 
-function pattern (node: Node): boolean {
-    return getProperties(node).kindName.endsWith('Pattern') || expression(node);
+function pattern(node: Node, properties: Properties): boolean {
+  return (
+    properties.kindName.endsWith('Pattern') || expression(node, properties)
+  );
 }
 
-function statement (node: Node): boolean {
-    return getProperties(node).kindName.endsWith('Statement') || declaration(node);
+function statement(node: Node, properties: Properties): boolean {
+  return (
+    properties.kindName.endsWith('Statement') || declaration(node, properties)
+  );
 }

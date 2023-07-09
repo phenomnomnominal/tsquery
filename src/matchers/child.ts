@@ -1,11 +1,15 @@
-// Dependencies:
-import { Node } from 'typescript';
-import { findMatches } from '../match';
-import { TSQuerySelectorNode } from '../tsquery-types';
+import type { Child } from 'esquery';
+import type { Node } from 'typescript';
 
-export function child (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>): boolean {
-    if (findMatches(node, selector.right, ancestry)) {
-        return findMatches(ancestry[0], selector.left, ancestry.slice(1));
-    }
-    return false;
+import { findMatches } from '../traverse';
+
+export function child(
+  node: Node,
+  selector: Child,
+  ancestors: Array<Node>
+): boolean {
+  if (findMatches(node, selector.right, ancestors)) {
+    return findMatches(ancestors[0], selector.left, ancestors.slice(1));
+  }
+  return false;
 }

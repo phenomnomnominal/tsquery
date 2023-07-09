@@ -1,8 +1,6 @@
-// Dependencies:
-import { IfStatement } from 'typescript';
+import type { IfStatement } from 'typescript';
 import { conditional } from './fixtures';
 
-// Under test:
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {

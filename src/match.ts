@@ -1,36 +1,26 @@
-// Dependencies:
-import { Node } from 'typescript';
-import { MATCHERS } from './matchers';
-import { traverseChildren } from './traverse';
-import { TSQueryOptions, TSQuerySelectorNode } from './tsquery-types';
+import { parse, type Node, type Selector } from './index';
 
-export function match <T extends Node = Node> (node: Node, selector: TSQuerySelectorNode, options: TSQueryOptions = {}): Array<T> {
-    const results: Array<T> = [];
-    if (!selector) {
-        return results;
+import { findMatches, traverse } from './traverse';
+
+/**
+ * @public
+ * Find AST `Nodes` within a given AST `Node` matching a `Selector`.
+ *
+ * @param node - the `Node` to be searched. This could be a TypeScript [`SourceFile`](https://github.com/microsoft/TypeScript/blob/main/src/services/types.ts#L159), or a `Node` from a previous query.
+ * @param selector - a TSQuery `Selector` (using the [ESQuery selector syntax](https://github.com/estools/esquery)).
+ * @returns an `Array` of `Nodes` which match the `Selector`.
+ */
+export function match<T extends Node = Node>(
+  node: Node,
+  selector: string | Selector
+): Array<T> {
+  const results: Array<T> = [];
+
+  traverse(node, (childNode: Node, ancestry: Array<Node>) => {
+    if (findMatches(childNode, parse.ensure(selector), ancestry)) {
+      results.push(childNode as T);
     }
+  });
 
-    traverseChildren(node, (childNode: Node, ancestry: Array<Node>) => {
-        if (findMatches(childNode, selector, ancestry, options)) {
-            results.push(childNode as T);
-        }
-    }, options);
-
-    return results;
-}
-
-export function findMatches (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node> = [], options: TSQueryOptions = {}): boolean {
-    if (!selector) {
-        return true;
-    }
-    if (!node) {
-        return false;
-    }
-
-    const matcher = MATCHERS[selector.type];
-    if (matcher) {
-        return matcher(node, selector, ancestry, options);
-    }
-
-    throw new Error(`Unknown selector type: ${selector.type}`);
+  return results;
 }

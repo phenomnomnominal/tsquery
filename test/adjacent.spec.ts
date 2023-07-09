@@ -1,7 +1,5 @@
-// Dependencies:
 import { simpleProgram } from './fixtures';
 
-// Under test:
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {

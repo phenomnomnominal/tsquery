@@ -1,4 +1,3 @@
-// Under test:
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
@@ -22,6 +21,26 @@ console.log('bar');
 logger.log('foo');
 logger.log('bar');
 // console.log('baz');
+
+            `.trim()
+      );
+    });
+
+    it('should handle lists of AST nodes:', () => {
+      const text = `
+
+console.log('foo', 'bar');
+
+            `.trim();
+      const result = tsquery.replace(
+        text,
+        'StringLiteral[value="foo"]',
+        () => ''
+      );
+      expect(result.trim()).toEqual(
+        `
+
+console.log('bar');
 
             `.trim()
       );
