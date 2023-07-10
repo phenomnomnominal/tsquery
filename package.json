@@ -1,6 +1,6 @@
 {
   "name": "@phenomnomnominal/tsquery",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Query TypeScript ASTs with the esquery API!",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -25,6 +25,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@types/esquery": "^1.5.0",
     "esquery": "^1.5.0"
   },
   "peerDependencies": {
@@ -34,7 +35,6 @@
     "dist/src"
   ],
   "devDependencies": {
-    "@types/esquery": "^1.5.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.4.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
