@@ -1,5 +1,4 @@
-// Dependencies:
-import {
+import type {
   BinaryExpression,
   Block,
   CallExpression,
@@ -7,11 +6,12 @@ import {
   IfStatement,
   JSDoc,
   JSDocParameterTag,
-  SyntaxKind
+  Node
 } from 'typescript';
+
+import { SyntaxKind } from 'typescript';
 import { conditional, simpleFunction } from './fixtures';
 
-// Under test:
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
@@ -61,19 +61,20 @@ describe('tsquery:', () => {
       ]);
     });
 
-    it('should work with the `visitAllChildren` option', () => {
+    it('should work with JSDoc contents', () => {
       const ast = tsquery.ast(simpleFunction);
-      const result = tsquery(ast, 'FunctionDeclaration JSDocParameterTag', {
-        visitAllChildren: true
-      });
+      const result = tsquery(ast, 'FunctionDeclaration JSDocParameterTag');
 
       expect(result[0].kind).toEqual(SyntaxKind.JSDocParameterTag);
-      expect(result).toEqual([
-        ((ast.statements[0] as any).jsDoc as Array<JSDoc>)[0]
-          .tags![0] as JSDocParameterTag,
-        ((ast.statements[0] as any).jsDoc as Array<JSDoc>)[0]
-          .tags![1] as JSDocParameterTag
-      ]);
+
+      const [statement] = ast.statements;
+
+      expect(result).toEqual(
+        hasJSDoc(statement) && [
+          statement.jsDoc[0].tags?.[0] as JSDocParameterTag,
+          statement.jsDoc[0].tags?.[1] as JSDocParameterTag
+        ]
+      );
     });
 
     it('should throw if an invalid SyntaxKind is used', () => {
@@ -85,3 +86,8 @@ describe('tsquery:', () => {
     });
   });
 });
+
+type WithJSDoc = { jsDoc: Array<JSDoc> };
+function hasJSDoc(node: unknown): node is Node & WithJSDoc {
+  return !!(node as WithJSDoc).jsDoc;
+}

@@ -1,11 +1,6 @@
-// Dependencies:
-import {
-  Node,
-  SyntaxKind,
-  VariableDeclaration,
-  VariableDeclarationList,
-  VariableStatement
-} from 'typescript';
+import type { Node } from 'typescript';
+
+import { SyntaxKind } from 'typescript';
 import {
   conditional,
   forLoop,
@@ -14,7 +9,6 @@ import {
   statement
 } from './fixtures';
 
-// Under test:
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {
@@ -23,7 +17,7 @@ describe('tsquery:', () => {
       const ast = tsquery.ast(conditional);
       const result = tsquery<Node>(ast, ':not(Identifier)');
 
-      expect(result.length).toEqual(36);
+      expect(result.length).toEqual(68);
       expect(
         result.every((node) => node.kind !== SyntaxKind.Identifier)
       ).toEqual(true);
@@ -33,7 +27,7 @@ describe('tsquery:', () => {
       const ast = tsquery.ast(forLoop);
       const result = tsquery(ast, ':not([name="x"])');
 
-      expect(result.length).toEqual(21);
+      expect(result.length).toEqual(38);
     });
 
     it('should handle an inverse wildcard query', () => {
@@ -47,7 +41,7 @@ describe('tsquery:', () => {
       const ast = tsquery.ast(simpleProgram);
       const result = tsquery<Node>(ast, ':not(Identifier, IfStatement)');
 
-      expect(result.length).toEqual(21);
+      expect(result.length).toEqual(38);
       expect(
         result.every((node) => {
           const { kind } = node;
@@ -62,22 +56,7 @@ describe('tsquery:', () => {
       const ast = tsquery.ast(statement);
       const result = tsquery(ast, ':not([text=1])');
 
-      expect(result).toEqual([
-        ast,
-        ast.statements[0],
-        (ast.statements[0] as VariableStatement).declarationList,
-        (
-          (ast.statements[0] as VariableStatement)
-            .declarationList as VariableDeclarationList
-        ).declarations[0],
-        (
-          (
-            (ast.statements[0] as VariableStatement)
-              .declarationList as VariableDeclarationList
-          ).declarations[0] as VariableDeclaration
-        ).name,
-        ast.endOfFileToken
-      ]);
+      expect(result.length).toEqual(11);
     });
   });
 });

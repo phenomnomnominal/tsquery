@@ -6,18 +6,16 @@
 
 TSQuery is a port of the ESQuery API for TypeScript! TSQuery allows you to query a TypeScript AST for patterns of syntax using a CSS style selector system. 
 
-[Check out the ESQuery demo](https://estools.github.io/esquery/) - note that the demo requires JavaScript code, not TypeScript
+## Demos:
 
-[You can also check out the TSQuery Playground](https://tsquery-playground.firebaseapp.com) - Lovingly crafted by [Uri Shaked]( https://github.com/urish)
+[ESQuery demo](https://estools.github.io/esquery/) - note that the demo requires JavaScript code, not TypeScript
+[TSQuery demo](https://tsquery-playground.firebaseapp.com) by [Uri Shaked](https://github.com/urish)
 
 ## Installation
 
 ```sh
 npm install @phenomnomnominal/tsquery --save-dev
 ```
-
-## Upgrading from version 4.x.x to 5.x.x
-- Update all your calls to `tsquery.map()` to make sure they match the new contract. For more information, check https://github.com/phenomnomnominal/tsquery/pull/76.
 
 ## Examples
 
@@ -26,7 +24,7 @@ Say we want to select all instances of an identifier with name "Animal", e.g. th
 We would do something like the following:
 
 ```ts
-import { tsquery } from '@phenomnomnominal/tsquery';
+import { ast, query } from '@phenomnomnominal/tsquery';
 
 const typescript = `
 
@@ -47,12 +45,10 @@ class Snake extends Animal {
 
 `;
 
-const ast = tsquery.ast(typescript);
-const nodes = tsquery(ast, 'Identifier[name="Animal"]');
+const ast = ast(typescript);
+const nodes = query(ast, 'Identifier[name="Animal"]');
 console.log(nodes.length); // 2
 ```
-
-[Try running this code in StackBlitz](https://stackblitz.com/edit/tsquery-examples)!
 
 ### Selectors
 
@@ -63,7 +59,7 @@ The following selectors are supported:
 * [attribute existence](http://dev.w3.org/csswg/selectors4/#attribute-selectors): `[attr]`
 * [attribute value](http://dev.w3.org/csswg/selectors4/#attribute-selectors): `[attr="foo"]` or `[attr=123]`
 * attribute regex: `[attr=/foo.*/]`
-* attribute conditons: `[attr!="foo"]`, `[attr>2]`, `[attr<3]`, `[attr>=2]`, or `[attr<=3]`
+* attribute conditions: `[attr!="foo"]`, `[attr>2]`, `[attr<3]`, `[attr>=2]`, or `[attr<=3]`
 * nested attribute: `[attr.level2="foo"]`
 * field: `FunctionDeclaration > Identifier.id`
 * [First](http://dev.w3.org/csswg/selectors4/#the-first-child-pseudo) or [last](http://dev.w3.org/csswg/selectors4/#the-last-child-pseudo) child: `:first-child` or `:last-child`
@@ -90,3 +86,97 @@ The following selectors are supported:
 * `CallExpression` - function call
 * `NumericLiteral` - any numeric constant
 * `NoSubstitutionTemplateLiteral`, `TemplateExpression` - template strings and expressions
+
+## API:
+
+### `ast`:
+
+Parse a string of code into an Abstract Syntax Tree which can then be queried with TSQuery Selectors.
+
+```typescript
+import { ast } from '@phenomnomnominal/tsquery';
+
+const sourceFile = ast('const x = 1;');
+```
+
+### `includes`:
+
+Check for `Nodes` within a given `string` of code or AST `Node` matching a `Selector`.
+
+```typescript
+import { includes } from '@phenomnomnominal/tsquery';
+
+const hasIdentifier = includes('const x = 1;', 'Identifier');
+```
+
+### `map`:
+
+Transform AST `Nodes` within a given `Node` matching a `Selector`. Can be used to do `Node`-based replacement or removal of parts of the input AST.
+
+```typescript
+import { factory } from 'typescript';
+import { map } from '@phenomnomnominal/tsquery';
+
+const updatedAST = map('const x = 1;', 'Identifier', () => factory.createIdentifier('y'));
+```
+
+### `match`:
+
+Find AST `Nodes` within a given AST `Node` matching a `Selector`.
+
+```typescript
+import { ast, match } from '@phenomnomnominal/tsquery';
+
+const tree = ast('const x = 1;')
+const [xNode] = match(tree, 'Identifier');
+```
+
+### `parse`:
+
+Parse a `string` into an [ESQuery](https://github.com/estools/esquery) `Selector`.
+
+```typescript
+import { parse } from '@phenomnomnominal/tsquery';
+
+const selector = parse(':matches([attr] > :first-child, :last-child)');
+```
+
+### `project`:
+
+Get all the `SourceFiles` included in a the TypeScript project described by a given config file.
+
+```typescript
+import { project } from '@phenomnomnominal/tsquery';
+
+const files = project('./tsconfig.json');
+```
+
+### `files`:
+
+Get all the file paths included ina the TypeScript project described by a given config file.
+
+```typescript
+import { files } from '@phenomnomnominal/tsquery';
+
+const filePaths = files('./tsconfig.json');
+```
+
+### `match`:
+
+Find AST `Nodes` within a given `string` of code or AST `Node` matching a `Selector`.
+
+```typescript
+import {query } from '@phenomnomnominal/tsquery';
+
+const [xNode] = query('const x = 1;', 'Identifier');
+```
+
+### `replace`:
+
+Transform AST `Nodes` within a given `Node` matching a `Selector`. Can be used to do string-based replacement or removal of parts of the input AST. The updated code will be printed with the TypeScript [`Printer`](https://github.com/microsoft/TypeScript-wiki/blob/main/Using-the-Compiler-API.md#creating-and-printing-a-typescript-ast), so you may need to run your own formatter on any output code.
+
+```typescript
+import { replace } from '@phenomnomnominal/tsquery';
+
+const updatedCode = replace('const x = 1;', 'Identifier', () => 'y'));
+```

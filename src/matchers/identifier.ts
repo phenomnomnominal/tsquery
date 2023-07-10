@@ -1,8 +1,9 @@
-// Dependencies:
-import { Node } from 'typescript';
-import { syntaxKindName } from '../syntax-kind';
-import { TSQuerySelectorNode } from '../tsquery-types';
+import type { Identifier } from 'esquery';
+import type { Node } from 'typescript';
 
-export function identifier (node: Node, selector: TSQuerySelectorNode): boolean {
-    return syntaxKindName(node.kind).toLowerCase() === (selector.value as string).toLowerCase();
+import { syntaxKindName } from '../syntax-kind';
+
+export function identifier(node: Node, selector: Identifier): boolean {
+  const name = syntaxKindName(node.kind);
+  return !!name && name.toLowerCase() === selector.value.toLowerCase();
 }

@@ -1,15 +1,15 @@
-// Dependencies:
-import { Identifier, SyntaxKind } from 'typescript';
+import type { Identifier } from 'typescript';
+
+import { SyntaxKind } from 'typescript';
 import { conditional } from './fixtures';
 
-// Under test:
-import { tsquery } from '../src/index';
+import { tsquery, ast, query } from '../src/index';
 
 describe('tsquery:', () => {
   describe('tsquery - child:', () => {
     it('should find any nodes that are a direct child of another node', () => {
-      const ast = tsquery.ast(conditional);
-      const result = tsquery<Identifier>(ast, 'BinaryExpression > Identifier');
+      const tree = ast(conditional);
+      const result = query<Identifier>(tree, 'BinaryExpression > Identifier');
 
       expect(
         result.every((node) => {

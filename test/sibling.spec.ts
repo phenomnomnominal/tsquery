@@ -1,47 +1,48 @@
-// Dependencies:
-import { FunctionDeclaration, ParameterDeclaration } from 'typescript';
+import type { FunctionDeclaration } from 'typescript';
+
 import { siblings, simpleProgram } from './fixtures';
 
-// Under test:
-import { tsquery } from '../src/index';
+import { ast, query } from '../src/index';
 
 describe('tsquery:', () => {
   describe('tsquery - sibling:', () => {
     it('should find a node that is a subsequent sibling of another node', () => {
-      const ast = tsquery.ast(simpleProgram);
-      const result = tsquery(ast, 'VariableStatement ~ IfStatement');
+      const parsed = ast(simpleProgram);
+      const result = query(parsed, 'VariableStatement ~ IfStatement');
 
-      expect(result).toEqual([ast.statements[3]]);
+      expect(result).toEqual([parsed.statements[3]]);
     });
 
     it('should find a node that is a subsequent sibling of another node, including when visiting out of band nodes', () => {
-      const ast = tsquery.ast(siblings);
-      const result = tsquery(ast, 'Identifier[name="d"] ~ AnyKeyword', {
-        visitAllChildren: true
-      });
+      const parsed = ast(siblings);
+      const result = query(parsed, 'Identifier[name="d"] ~ AnyKeyword');
 
       expect(result).toEqual([
-        (
-          (ast.statements[2] as FunctionDeclaration)
-            .parameters[0] as ParameterDeclaration
-        ).type
+        (parsed.statements[2] as FunctionDeclaration).parameters[0].type
       ]);
     });
 
     it('should find a function declaration that is the next sibling of another function declaration', () => {
-      const ast = tsquery.ast(siblings);
-      const result = tsquery(ast, 'FunctionDeclaration + FunctionDeclaration');
+      const parsed = ast(siblings);
+      const result = query(parsed, 'FunctionDeclaration + FunctionDeclaration');
 
-      expect(result).toEqual([ast.statements[1], ast.statements[2]]);
+      expect(result).toEqual([parsed.statements[1], parsed.statements[2]]);
     });
 
     it('should find a parameter that is the next sibling of another parameter', () => {
-      const ast = tsquery.ast(siblings);
-      const result = tsquery(ast, 'Parameter + Parameter');
+      const parsed = ast(siblings);
+      const result = query(parsed, 'Parameter + Parameter');
 
       expect(result).toEqual([
-        (ast.statements[2] as FunctionDeclaration).parameters[1]
+        (parsed.statements[2] as FunctionDeclaration).parameters[1]
       ]);
+    });
+
+    it('should work with a SourceFile', () => {
+      const parsed = ast(siblings);
+      const result = query(parsed, 'SourceFile + Identifier');
+
+      expect(result).toEqual([]);
     });
   });
 });

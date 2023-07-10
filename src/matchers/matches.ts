@@ -1,12 +1,18 @@
-// Dependencies:
-import { Node } from 'typescript';
-import { findMatches } from '../match';
-import { TSQuerySelectorNode } from '../tsquery-types';
+import type { MultiSelector } from 'esquery';
+import type { Node } from 'typescript';
 
-export function matches (modifier: 'some' | 'every'): (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>) => boolean {
-    return function (node: Node, selector: TSQuerySelectorNode, ancestry: Array<Node>): boolean {
-        return selector.selectors[modifier](childSelector => {
-            return findMatches(node, childSelector, ancestry);
-        });
-    };
+import { findMatches } from '../traverse';
+
+export function matches<Selector extends MultiSelector>(
+  modifier: 'some' | 'every'
+): (node: Node, selector: Selector, ancestors: Array<Node>) => boolean {
+  return function (
+    node: Node,
+    selector: Selector,
+    ancestors: Array<Node>
+  ): boolean {
+    return selector.selectors[modifier]((childSelector) =>
+      findMatches(node, childSelector, ancestors)
+    );
+  };
 }

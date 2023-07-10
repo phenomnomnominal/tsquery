@@ -1,69 +1,87 @@
-// Dependencies:
-import { Node } from 'typescript';
-import { TSQueryAttributeOperators, TSQueryAttributeOperatorType, TSQuerySelectorNode } from '../tsquery-types';
+import type { Attribute } from 'esquery';
+import type { Node } from 'typescript';
+import type { AttributeOperatorType } from '../types';
+
 import { getPath } from '../utils';
 
-// Constants:
-const OPERATOR: TSQueryAttributeOperators = {
-    '=': equal,
-    '!=': notEqual,
-    '<=': lessThanEqual,
-    '<': lessThan,
-    '>=': greaterThanEqual,
-    '>': greaterThan
+const OPERATOR = {
+  '=': equal,
+  '!=': notEqual,
+  '<=': lessThanEqual,
+  '<': lessThan,
+  '>=': greaterThanEqual,
+  '>': greaterThan
 };
 
-export function attribute (node: Node, selector: TSQuerySelectorNode): boolean {
-    const obj: any = getPath(node, selector.name);
+export function attribute(node: Node, selector: Attribute): boolean {
+  const obj: unknown = getPath(node, selector.name);
 
-    // Bail on undefined but *not* if value is explicitly `null`:
-    if (obj === undefined) {
-        return false;
-    }
-
-    const { operator } = selector;
-
-    if (operator == null) {
-        return obj != null;
-    }
-
-    const { type, value } = selector.value as TSQuerySelectorNode;
-
-    const matcher = OPERATOR[operator];
-    if (matcher) {
-        return matcher(obj, value, type);
-    }
+  // Bail on undefined but *not* if value is explicitly `null`:
+  if (obj === undefined) {
     return false;
+  }
+
+  if (selector?.operator == null) {
+    return obj != null;
+  }
+
+  const { operator } = selector;
+
+  if (!selector?.value) {
+    return false;
+  }
+
+  const { type, value } = selector.value;
+
+  const matcher = OPERATOR[operator];
+  if (matcher) {
+    return matcher(obj, value, type);
+  }
+  return false;
 }
 
-function equal (obj: any, value: any, type: TSQueryAttributeOperatorType): boolean {
-    switch (type) {
-        case 'regexp': return typeof obj === 'string' && (value as RegExp).test(obj);
-        case 'literal': return `${value}` === `${obj}`;
-        case 'type': return value === typeof obj;
-    }
+function equal(
+  obj: unknown,
+  value: unknown,
+  type: AttributeOperatorType
+): boolean {
+  switch (type) {
+    case 'regexp':
+      return typeof obj === 'string' && (value as RegExp).test(obj);
+    case 'literal':
+      return `${value as string}` === `${obj as string}`;
+    case 'type':
+      return value === typeof obj;
+  }
 }
 
-function notEqual (obj: any, value: any, type: TSQueryAttributeOperatorType): boolean {
-    switch (type) {
-        case 'regexp': return typeof obj === 'string' && !(value as RegExp).test(obj);
-        case 'literal': return `${value}` !== `${obj}`;
-        case 'type': return value !== typeof obj;
-    }
+function notEqual(
+  obj: unknown,
+  value: unknown,
+  type: AttributeOperatorType
+): boolean {
+  switch (type) {
+    case 'regexp':
+      return typeof obj === 'string' && !(value as RegExp).test(obj);
+    case 'literal':
+      return `${value as string}` !== `${obj as string}`;
+    case 'type':
+      return value !== typeof obj;
+  }
 }
 
-function lessThanEqual (obj: any, value: any): boolean {
-    return obj <= value;
+function lessThanEqual(obj: unknown, value: unknown): boolean {
+  return (obj as number) <= (value as number);
 }
 
-function lessThan (obj: any, value: any): boolean {
-    return obj < value;
+function lessThan(obj: unknown, value: unknown): boolean {
+  return (obj as number) < (value as number);
 }
 
-function greaterThanEqual (obj: any, value: any): boolean {
-    return obj >= value;
+function greaterThanEqual(obj: unknown, value: unknown): boolean {
+  return (obj as number) >= (value as number);
 }
 
-function greaterThan (obj: any, value: any): boolean {
-    return obj > value;
+function greaterThan(obj: unknown, value: unknown): boolean {
+  return (obj as number) > (value as number);
 }

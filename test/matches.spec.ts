@@ -1,5 +1,4 @@
-// Dependencies:
-import {
+import type {
   BinaryExpression,
   Block,
   ExpressionStatement,
@@ -7,6 +6,7 @@ import {
   FunctionDeclaration,
   IfStatement
 } from 'typescript';
+
 import {
   conditional,
   forLoop,
@@ -14,7 +14,6 @@ import {
   simpleProgram
 } from './fixtures';
 
-// Under test:
 import { tsquery } from '../src/index';
 
 describe('tsquery:', () => {

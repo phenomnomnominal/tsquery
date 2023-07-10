@@ -1,18 +1,17 @@
-// Under test:
-import { tsquery } from '../src/index';
+import { MultiSelector, tsquery, parse } from '../src/index';
 
 describe('tsquery:', () => {
   describe('tsquery.parse - null query:', () => {
     it('should parse an empty query', () => {
       const result = tsquery.parse('');
 
-      expect(result).toEqual(undefined);
+      expect(result).toEqual(null);
     });
 
     it('should parse a whitespace query', () => {
       const result = tsquery.parse('      ');
 
-      expect(result).toEqual(undefined);
+      expect(result).toEqual(null);
     });
   });
 
@@ -20,13 +19,13 @@ describe('tsquery:', () => {
     it('should parse an empty comment', () => {
       const result = tsquery.parse('/**/');
 
-      expect(result).toEqual(undefined);
+      expect(result).toEqual(null);
     });
 
     it('should parse a whitespace comment', () => {
       const result = tsquery.parse('/*      */');
 
-      expect(result).toEqual(undefined);
+      expect(result).toEqual(null);
     });
 
     it('should parse a multi-line comment', () => {
@@ -39,7 +38,7 @@ describe('tsquery:', () => {
  */
             `);
 
-      expect(result).toEqual(undefined);
+      expect(result).toEqual(null);
     });
 
     it('should parse a commented multi-line query', () => {
@@ -48,10 +47,10 @@ describe('tsquery:', () => {
 JsxAttribute[name.name=/title|label|alt/] StringLiteral,
 
 /* JsxText which content is not only whitespace */
-JsxText:not([text=/^\s+$/])
+JsxText:not([text=/^\\s+$/])
             `);
 
-      expect(result.selectors.length).toEqual(2);
+      expect((result as MultiSelector).selectors.length).toEqual(2);
     });
   });
 
@@ -90,6 +89,21 @@ JsxText:not([text=/^\s+$/])
       const result = tsquery.parse('     Identifier     ');
 
       expect(result).not.toEqual(undefined);
+    });
+
+    describe('tsquery.parse.ensure:', () => {
+      it('should throw if an invalid selector is passed', () => {
+        expect(() => {
+          parse.ensure('');
+        }).toThrow('"" is not a valid TSQuery Selector.');
+      });
+
+      it('should do nothing if a valid selector is passed', () => {
+        const selector = parse('Identifier');
+        const result = selector && parse.ensure(selector);
+
+        expect(result).toEqual(selector);
+      });
     });
   });
 });
