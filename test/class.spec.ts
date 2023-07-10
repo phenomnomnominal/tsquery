@@ -6,7 +6,7 @@ import type {
   VariableStatement
 } from 'typescript';
 
-import { expression, literal, simpleProgram } from './fixtures';
+import { expression, literal, method, simpleProgram } from './fixtures';
 
 import { ast, query } from '../src/index';
 
@@ -39,6 +39,13 @@ describe('tsquery:', () => {
         .expression as BinaryExpression;
 
       expect(result).toEqual([binary, binary.left, binary.right]);
+    });
+
+    it('should find a MethodDeclaration', () => {
+      const tree = ast(method);
+      const result = query(tree, ':function');
+
+      expect(result.length).toBe(1);
     });
 
     it('should find any literal', () => {

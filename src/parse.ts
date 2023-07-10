@@ -12,7 +12,7 @@ const IDENTIFIER_QUERY = 'identifier';
 
 /**
  * @public
- * Parse a `string` into a ESQuery `Selector`.
+ * Parse a `string` into an ESQuery `Selector`.
  *
  * @param selector - a TSQuery `Selector` (using the [ESQuery selector syntax](https://github.com/estools/esquery)).
  * @returns a validated `Selector` or `null` if the input `string` is invalid.
@@ -25,7 +25,7 @@ export function parse(selector: string): Selector | null {
 
 /**
  * @public
- * Parse a `string` into a ESQuery `Selector`.
+ * Ensure that an input is a parsed ESQuery `Selector`.
  *
  * @param selector - a TSQuery `Selector` (using the [ESQuery selector syntax](https://github.com/estools/esquery)).
  * @returns a validated `Selector`

@@ -5,7 +5,7 @@ import { ScriptKind } from './index';
 
 /**
  * @public
- * Convert a string of code into an Abstract Syntax Tree which can then be queried with TSQuery Selectors.
+ * Parse a string of code into an Abstract Syntax Tree which can then be queried with TSQuery Selectors.
  *
  * @param source - the code that should be parsed into a [`SourceFile`](https://github.com/microsoft/TypeScript/blob/main/src/services/types.ts#L159). A `SourceFile` is the TypeScript implementation of an Abstract Syntax Tree (with extra details).
  * @param fileName - a name (if known) for the `SourceFile`. Defaults to empty string.
@@ -26,6 +26,14 @@ export function ast(
   );
 }
 
+
+/**
+ * @public
+ * Ensure that an input is a parsed TypeScript `Node`.
+ *
+ * @param code - the code that should be parsed into a [`SourceFile`](https://github.com/microsoft/TypeScript/blob/main/src/services/types.ts#L159).
+ * @returns a parsed TypeScript `Node`
+ */
 function ensure(code: string, scriptKind: ScriptKind): Node;
 function ensure(code: Node): Node;
 function ensure(code: string | Node, scriptKind?: ScriptKind): Node {

@@ -5,13 +5,13 @@ describe('tsquery:', () => {
     it('should process a tsconfig.json file', () => {
       const files = tsquery.project('./tsconfig.json');
 
-      expect(files.length).toEqual(225);
+      expect(files.length).toEqual(226);
     });
 
     it('should find a tsconfig.json file in a directory', () => {
       const files = tsquery.project('./');
 
-      expect(files.length).toEqual(225);
+      expect(files.length).toEqual(226);
     });
 
     it(`should handle when a path doesn't exist`, () => {
@@ -25,7 +25,7 @@ describe('tsquery:', () => {
     it('should get the file paths from a tsconfig.json file', () => {
       const filePaths = tsquery.projectFiles('./tsconfig.json');
 
-      expect(filePaths.length).toEqual(60);
+      expect(filePaths.length).toEqual(61);
     });
 
     it(`should handle when a path doesn't exist`, () => {

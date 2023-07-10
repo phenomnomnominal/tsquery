@@ -58,7 +58,11 @@ function expression(node: Node, properties: Properties): boolean {
 
 function functionMatcher(_: Node, properties: Properties): boolean {
   const { kindName } = properties;
-  return kindName.startsWith('Function') || kindName === 'ArrowFunction';
+  return (
+    kindName.startsWith('Function') ||
+    kindName === 'ArrowFunction' ||
+    kindName === 'MethodDeclaration'
+  );
 }
 
 function pattern(node: Node, properties: Properties): boolean {

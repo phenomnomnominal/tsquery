@@ -14,7 +14,7 @@ import type {
 import { conditional, simpleFunction, simpleProgram } from './fixtures';
 
 import { factory } from 'typescript';
-import { tsquery, ast, query } from '../src/index';
+import { tsquery, ast, parse, query } from '../src/index';
 import { getProperties } from '../src/traverse';
 
 describe('tsquery:', () => {
@@ -152,6 +152,18 @@ describe('tsquery:', () => {
           (ast.statements[0] as FunctionDeclaration).name
         ]
       );
+    });
+
+    it('should handle a case-insensitive RegExp', () => {
+      let throws = false;
+
+      try {
+        parse('Identifier[name=/CAPTCHA/i]');
+      } catch {
+        throws = true;
+      }
+
+      expect(throws).toBe(false);
     });
 
     it('should find any nodes with an attribute with a value that is greater than or equal to a value', () => {

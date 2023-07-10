@@ -3,6 +3,7 @@ export * from './expression';
 export * from './for-loop';
 export * from './jsx';
 export * from './literal';
+export * from './method';
 export * from './siblings';
 export * from './simple-function';
 export * from './simple-program';
