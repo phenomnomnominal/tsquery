@@ -1,8 +1,6 @@
 # TSQuery
 
 [![npm version](https://img.shields.io/npm/v/@phenomnomnominal/tsquery.svg)](https://img.shields.io/npm/v/@phenomnomnominal/tsquery.svg)
-[![Code Climate](https://codeclimate.com/github/phenomnomnominal/tsquery/badges/gpa.svg)](https://codeclimate.com/github/phenomnomnominal/tsquery)
-[![Test Coverage](https://codeclimate.com/github/phenomnomnominal/tsquery/coverage.svg)](https://codeclimate.com/github/phenomnomnominal/tsquery/coverage)
 
 TSQuery is a port of the ESQuery API for TypeScript! TSQuery allows you to query a TypeScript AST for patterns of syntax using a CSS style selector system. 
 
