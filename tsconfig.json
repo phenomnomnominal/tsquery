@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES2020"],
+    "module": "CommonJS",
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noUnusedLocals": true,
@@ -12,7 +13,7 @@
     "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2020",
+    "target": "ES2017",
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types/"]
   },
