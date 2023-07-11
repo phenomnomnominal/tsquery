@@ -115,7 +115,8 @@ Transform AST `Nodes` within a given `Node` matching a `Selector`. Can be used t
 import { factory } from 'typescript';
 import { map } from '@phenomnomnominal/tsquery';
 
-const updatedAST = map('const x = 1;', 'Identifier', () => factory.createIdentifier('y'));
+const tree = ast('const x = 1;')
+const updatedTree = map(tree, 'Identifier', () => factory.createIdentifier('y'));
 ```
 
 ### `match`:

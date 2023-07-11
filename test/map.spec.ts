@@ -30,6 +30,33 @@ logger.log('bar');
       );
     });
 
+    it('should can happen multiple times individual AST nodes:', () => {
+      const tree = ast(
+        `
+
+console.log('foo');
+console.log('bar');
+// console.log('baz');
+
+            `.trim()
+      );
+      const resultOne = map(tree, 'Identifier[name="console"]', () =>
+        factory.createIdentifier('logger')
+      );
+      const resultTwo = map(resultOne, 'Identifier[name="logger"]', () =>
+        factory.createIdentifier('log')
+      );
+      expect(print(resultTwo)).toEqual(
+        `
+
+log.log('foo');
+log.log('bar');
+// console.log('baz');
+
+            `.trim()
+      );
+    });
+
     it('should replace multiple AST nodes:', () => {
       const tree = ast(
         `

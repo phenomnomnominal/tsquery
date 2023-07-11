@@ -1,4 +1,5 @@
 import type {
+  SourceFile,
   TransformationContext,
   Transformer,
   TransformerFactory
@@ -6,31 +7,31 @@ import type {
 import type { Node, NodeTransformer, Selector, VisitResult } from './index';
 
 import { transform, visitNode, visitEachChild } from 'typescript';
-import { match, parse } from './index';
+import { ast, match, parse, print } from './index';
 
 /**
  * @public
  * Transform AST `Nodes` within a given `Node` matching a `Selector`. Can be used to do `Node`-based replacement or removal of parts of the input AST.
  *
- * @param node - the `Node` to be searched. This could be a TypeScript [`SourceFile`](https://github.com/microsoft/TypeScript/blob/main/src/services/types.ts#L159), or a Node from a previous selector.
+ * @param sourceFile - the TypeScript [`SourceFile`](https://github.com/microsoft/TypeScript/blob/main/src/services/types.ts#L159) to be searched.
  * @param selector - a TSQuery `Selector` (using the [ESQuery selector syntax](https://github.com/estools/esquery)).
  * @param nodeTransformer - a function to transform any matched `Nodes`. If the original `Node` is returned, there is no change. If a new `Node` is returned, the original `Node` is replaced. If `undefined` is returned, the original `Node` is removed.
  * @returns a transformed `Node`.
  */
 export function map(
-  node: Node,
+  sourceFile: SourceFile,
   selector: string | Selector,
   nodeTransformer: NodeTransformer
-): Node {
-  const matches = match(node, parse.ensure(selector));
-  return mapTransform(node, matches, nodeTransformer);
+): SourceFile {
+  const matches = match(sourceFile, parse.ensure(selector));
+  return mapTransform(sourceFile, matches, nodeTransformer);
 }
 
 function mapTransform(
-  node: Node,
+  sourceFile: SourceFile,
   matches: Array<Node>,
   nodeTransformer: NodeTransformer
-) {
+): SourceFile {
   const transformer = createTransformer((node: Node) => {
     if (matches.includes(node)) {
       return nodeTransformer(node);
@@ -38,8 +39,8 @@ function mapTransform(
     return node;
   });
 
-  const [transformed] = transform(node, [transformer]).transformed;
-  return transformed;
+  const [transformed] = transform(sourceFile, [transformer]).transformed;
+  return ast(print(transformed));
 }
 
 export function createTransformer(
