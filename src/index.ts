@@ -39,6 +39,7 @@ export type { NodeTransformer, StringTransformer } from './types';
 export { ScriptKind, SyntaxKind } from 'typescript';
 
 export { ast } from './ast';
+export { print } from './print';
 
 export { includes } from './includes';
 export { match } from './match';

@@ -139,6 +139,21 @@ import { parse } from '@phenomnomnominal/tsquery';
 const selector = parse(':matches([attr] > :first-child, :last-child)');
 ```
 
+### `print`:
+
+Print a given `Node` or `SourceFile` to a string, using the default TypeScript printer.
+
+```typescript
+import { print } from '@phenomnomnominal/tsquery';
+import { factory } from 'typescript';
+
+  // create synthetic node:
+const node = factory.createArrowFunction(
+  // ...
+);
+const code = print(node);
+```
+
 ### `project`:
 
 Get all the `SourceFiles` included in a the TypeScript project described by a given config file.
