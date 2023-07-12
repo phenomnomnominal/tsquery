@@ -63,5 +63,25 @@ describe('tsquery:', () => {
 
       expect(result).toEqual([]);
     });
+
+    it('should handle edge indices', () => {
+      const tree = ast('import { foo } from "@foo";');
+      const [expected] = query(tree, 'ImportDeclaration');
+
+      expect(query(tree, 'ImportDeclaration:nth-child(0)')[0]).toEqual(
+        undefined
+      );
+      expect(query(tree, 'ImportDeclaration:nth-child(1)')[0]).toEqual(
+        expected
+      );
+      expect(query(tree, 'ImportDeclaration:first-child')[0]).toEqual(expected);
+      expect(query(tree, 'ImportDeclaration:last-child')[0]).toEqual(expected);
+      expect(query(tree, 'ImportDeclaration:nth-last-child(1)')[0]).toEqual(
+        expected
+      );
+      expect(query(tree, 'ImportDeclaration:nth-child(0)')[0]).toEqual(
+        undefined
+      );
+    });
   });
 });

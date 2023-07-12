@@ -84,7 +84,7 @@ function findSibling(
 
 const FILTERED_KEYS: Array<string> = ['parent'];
 
-function getVisitorKeys(node: Node | null): Array<string> {
+export function getVisitorKeys(node: Node | null): Array<string> {
   return node
     ? Object.keys(node)
         .filter((key) => !FILTERED_KEYS.includes(key))

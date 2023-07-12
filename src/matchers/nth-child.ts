@@ -7,12 +7,14 @@ import type {
 import type { Node } from 'typescript';
 
 import { findMatches } from '../traverse';
+import { getVisitorKeys } from './sibling';
 
 export function nthChild(
   node: Node,
   selector: SubjectSelector,
   ancestors: Array<Node>
 ): boolean {
+  debugger;
   const { right } = selector as BinarySelector;
   if (right && !findMatches(node, right, ancestors)) {
     return false;
@@ -43,6 +45,13 @@ function findNthChild(
     return false;
   }
 
-  const children = node.parent.getChildren();
-  return children.indexOf(node) === getIndex(children.length);
+  const keys = getVisitorKeys(node.parent || null);
+  return keys.some((key) => {
+    const prop = node.parent[key as keyof Node];
+    if (Array.isArray(prop)) {
+      const index = prop.indexOf(node);
+      return index >= 0 && index === getIndex(prop.length);
+    }
+    return false;
+  });
 }
