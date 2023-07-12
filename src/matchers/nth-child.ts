@@ -14,7 +14,6 @@ export function nthChild(
   selector: SubjectSelector,
   ancestors: Array<Node>
 ): boolean {
-  debugger;
   const { right } = selector as BinarySelector;
   if (right && !findMatches(node, right, ancestors)) {
     return false;
