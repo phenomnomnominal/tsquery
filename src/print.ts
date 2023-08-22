@@ -23,8 +23,18 @@ export function print(
 
   if (!isSourceFile(source)) {
     const file = ast('');
+    deletePos(source);
     return printer.printNode(EmitHint.Unspecified, source, file);
   }
 
   return printer.printFile(source).trim();
+}
+
+type WritableNode = {
+  -readonly [Key in keyof Node]: Node[Key];
+};
+
+function deletePos(node: WritableNode) {
+  node.pos = -1;
+  node.forEachChild(deletePos);
 }

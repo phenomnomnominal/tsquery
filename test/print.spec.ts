@@ -2,7 +2,7 @@ import { SyntaxKind, factory } from 'typescript';
 
 import { simpleFunction } from './fixtures/simple-function';
 
-import { ast, print } from '../src/index';
+import { ast, print, query } from '../src/index';
 
 describe('tsquery:', () => {
   describe('tsquery.print:', () => {
@@ -42,5 +42,12 @@ function foo(x, y) {
         )
       ).toEqual('async (x: number) => { }');
     });
+  });
+
+  it('should not delete strings', () => {
+    const tree = ast(`console.log("hello world")`);
+    const [str] = query(tree, 'StringLiteral');
+
+    expect(print(str)).toEqual('"hello world"');
   });
 });
