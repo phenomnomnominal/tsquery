@@ -43,8 +43,8 @@ class Snake extends Animal {
 
 `;
 
-const ast = ast(typescript);
-const nodes = query(ast, 'Identifier[name="Animal"]');
+const tree = ast(typescript);
+const nodes = query(tree, 'Identifier[name="Animal"]');
 console.log(nodes.length); // 2
 ```
 
