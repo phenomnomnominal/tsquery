@@ -15,9 +15,10 @@ export function match<T extends Node = Node>(
   selector: string | Selector
 ): Array<T> {
   const results: Array<T> = [];
+  const parsedSelector = parse.ensure(selector);
 
   traverse(node, (childNode: Node, ancestry: Array<Node>) => {
-    if (findMatches(childNode, parse.ensure(selector), ancestry)) {
+    if (findMatches(childNode, parsedSelector, ancestry)) {
       results.push(childNode as T);
     }
   });
