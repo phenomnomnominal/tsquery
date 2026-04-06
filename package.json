@@ -25,11 +25,11 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@types/esquery": "^1.5.0",
-    "esquery": "^1.5.0"
+    "@types/esquery": "^1.5.4",
+    "esquery": "^1.7.0"
   },
   "peerDependencies": {
-    "typescript": "^3 || ^4 || ^5"
+    "typescript": ">3.0.0"
   },
   "files": [
     "dist/src"
