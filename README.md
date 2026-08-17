@@ -28,7 +28,7 @@ const typescript = `
 
 class Animal {
     constructor(public name: string) { }
-    move(distanceInMeters: number = 0) {
+    move(distanceInMeters = 0) {
         console.log(\`\${this.name} moved \${distanceInMeters}m.\`);
     }
 }
