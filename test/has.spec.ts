@@ -1,8 +1,8 @@
-import type { BinaryExpression, Block, IfStatement } from 'typescript';
+import type { BinaryExpression, Block, IfStatement } from 'typescript/ast';
 
-import { conditional } from './fixtures';
+import { conditional } from './fixtures/index.js';
 
-import { tsquery } from '../src/index';
+import { tsquery } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - :has:', () => {

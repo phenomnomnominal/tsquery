@@ -4,10 +4,10 @@ import type {
   NthChild,
   NthLastChild
 } from 'esquery';
-import type { Node } from 'typescript';
+import type { Node } from 'typescript/ast';
 
-import { findMatches } from '../traverse';
-import { getVisitorKeys } from './sibling';
+import { findMatches } from '../traverse.js';
+import { getChildLists } from './sibling.js';
 
 export function nthChild(
   node: Node,
@@ -44,13 +44,8 @@ function findNthChild(
     return false;
   }
 
-  const keys = getVisitorKeys(node.parent || null);
-  return keys.some((key) => {
-    const prop = node.parent[key as keyof Node];
-    if (Array.isArray(prop)) {
-      const index = prop.indexOf(node);
-      return index >= 0 && index === getIndex(prop.length);
-    }
-    return false;
+  return getChildLists(node.parent).some((prop) => {
+    const index = prop.indexOf(node);
+    return index >= 0 && index === getIndex(prop.length);
   });
 }

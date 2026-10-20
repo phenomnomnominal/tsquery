@@ -1,4 +1,4 @@
-import { MultiSelector, tsquery, parse } from '../src/index';
+import { MultiSelector, tsquery, parse } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery.parse - null query:', () => {

@@ -1,6 +1,6 @@
-import { parse, type Node, type Selector } from './index';
+import { parse, type Node, type Selector } from './index.js';
 
-import { findMatches, traverse } from './traverse';
+import { findMatches, traverse } from './traverse.js';
 
 /**
  * @public

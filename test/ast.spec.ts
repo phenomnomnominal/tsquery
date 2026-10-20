@@ -1,8 +1,8 @@
-import { ScriptKind } from 'typescript';
+import { ScriptKind } from 'typescript/ast';
 
-import { simpleJsxCode } from './fixtures';
+import { simpleJsxCode } from './fixtures/index.js';
 
-import { tsquery, ast } from '../src/index';
+import { tsquery, ast } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - jsx:', () => {

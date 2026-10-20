@@ -1,7 +1,7 @@
-import type { Node, SourceFile } from './index';
+import type { Node, SourceFile } from './index.js';
 
-import { createSourceFile, ScriptTarget } from 'typescript';
-import { ScriptKind } from './index';
+import { withAPI } from './native-api.js';
+import { ScriptKind } from './index.js';
 
 /**
  * @public
@@ -17,15 +17,17 @@ export function ast(
   fileName = '',
   scriptKind = ScriptKind.TSX
 ): SourceFile {
-  return createSourceFile(
-    fileName || '',
-    source,
-    ScriptTarget.Latest,
-    true,
-    scriptKind
-  );
+  return withAPI((api) => {
+    const parsed = api.createSourceFile(fileName || 'file.tsx', source, {
+      scriptKind
+    });
+    try {
+      return parsed.sourceFile;
+    } finally {
+      parsed.dispose();
+    }
+  });
 }
-
 
 /**
  * @public

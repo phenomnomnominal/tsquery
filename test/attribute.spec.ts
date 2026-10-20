@@ -9,13 +9,18 @@ import type {
   JSDocParameterTag,
   Node,
   VariableStatement
-} from 'typescript';
+} from 'typescript/ast';
 
-import { conditional, simpleFunction, simpleProgram } from './fixtures';
+import {
+  conditional,
+  simpleFunction,
+  simpleProgram
+} from './fixtures/index.js';
 
-import { factory } from 'typescript';
-import { tsquery, ast, parse, query } from '../src/index';
-import { getProperties } from '../src/traverse';
+import * as factory from 'typescript/ast/factory';
+import { NodeFlags, TokenFlags } from 'typescript/ast';
+import { tsquery, ast, parse, query } from '../src/index.js';
+import { getProperties } from '../src/traverse.js';
 
 describe('tsquery:', () => {
   describe('tsquery - attribute:', () => {
@@ -105,13 +110,21 @@ describe('tsquery:', () => {
     });
 
     it('should support synthesized nodes', () => {
-      const ast = factory.createVariableStatement(undefined, [
-        factory.createVariableDeclaration(
-          'answer',
-          undefined,
-          factory.createLiteralTypeNode(factory.createNumericLiteral(42))
+      const ast = factory.createVariableStatement(
+        undefined,
+        factory.createVariableDeclarationList(
+          [
+            factory.createVariableDeclaration(
+              factory.createIdentifier('answer'),
+              undefined,
+              factory.createLiteralTypeNode(
+                factory.createNumericLiteral('42', TokenFlags.None)
+              )
+            )
+          ],
+          NodeFlags.None
         )
-      ]);
+      );
       const result = tsquery(ast, '[text="answer"]');
 
       expect(result).toEqual([ast.declarationList.declarations[0].name]);

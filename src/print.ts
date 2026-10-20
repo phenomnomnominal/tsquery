@@ -1,40 +1,38 @@
-import type { PrinterOptions } from 'typescript';
-import type { Node, SourceFile } from './index';
+import type { Node, SourceFile } from 'typescript/ast';
+import type { Printer } from 'typescript/sync';
 
-import { EmitHint, NewLineKind, createPrinter, isSourceFile } from 'typescript';
-import { ast } from './index';
+import { isSourceFile } from 'typescript/ast/is';
+import { withAPI } from './native-api.js';
+
+/** Options supported by the TypeScript native printer. */
+export type PrinterOptions = Parameters<Printer['printNode']>[1];
 
 /**
  * @public
- * Print a given `Node` or `SourceFile` to a string, using the default TypeScript printer.
+ * Print a given `Node` or `SourceFile` to a string, using the native TypeScript printer. Parsed and synthesized native nodes are supported without modifying their positions.
  *
- * @param source - the `Node` or `SourceFile` to print.
- * @param options - any `PrinterOptions`.
- * @returns the printed code
+ * @param source - the native `Node` or `SourceFile` to print.
+ * @param options - native printer options: `preserveSourceNewlines`, `neverAsciiEscape`, and `terminateUnterminatedLiterals`. Defaults to an empty object.
+ * @returns the printed code. Leading and trailing whitespace is trimmed when printing a `SourceFile`.
+ * @throws a `TypeError` if an unsupported printer option is supplied, including legacy options such as `removeComments` or `newLine`.
  */
 export function print(
   source: Node | SourceFile,
   options: PrinterOptions = {}
 ): string {
-  const printer = createPrinter({
-    newLine: NewLineKind.LineFeed,
-    ...options
-  });
-
-  if (!isSourceFile(source)) {
-    const file = ast('');
-    deletePos(source);
-    return printer.printNode(EmitHint.Unspecified, source, file);
+  const supportedOptions = new Set([
+    'preserveSourceNewlines',
+    'neverAsciiEscape',
+    'terminateUnterminatedLiterals'
+  ]);
+  for (const key of Object.keys(options)) {
+    if (!supportedOptions.has(key)) {
+      throw new TypeError(`Unsupported native printer option: ${key}`);
+    }
   }
-
-  return printer.printFile(source).trim();
-}
-
-type WritableNode = {
-  -readonly [Key in keyof Node]: Node[Key];
-};
-
-function deletePos(node: WritableNode) {
-  node.pos = -1;
-  node.forEachChild(deletePos);
+  return withAPI((api) =>
+    isSourceFile(source)
+      ? api.printer.printFile(source, options).trim()
+      : api.printer.printNode(source, options)
+  );
 }

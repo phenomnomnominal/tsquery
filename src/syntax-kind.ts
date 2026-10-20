@@ -1,4 +1,4 @@
-import { SyntaxKind } from 'typescript';
+import { SyntaxKind } from 'typescript/ast';
 
 // See https://github.com/Microsoft/TypeScript/issues/18062
 // Code inspired by https://github.com/fkling/astexplorer/blob/master/website/src/parsers/js/typescript.js

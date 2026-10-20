@@ -1,5 +1,5 @@
-import type { Node } from 'typescript';
-import { getProperties } from './traverse';
+import type { Node } from 'typescript/ast';
+import { getProperties } from './traverse.js';
 
 export function getPath(obj: unknown, path: string): unknown {
   const keys = path.split('.');

@@ -1,7 +1,7 @@
-import { conditional, simpleFunction } from './fixtures';
+import { conditional, simpleFunction } from './fixtures/index.js';
 
-import { ast, query, tsquery } from '../src/index';
-import { JSDocParameterTag } from 'typescript';
+import { ast, query, tsquery } from '../src/index.js';
+import { JSDocParameterTag } from 'typescript/ast';
 
 describe('tsquery:', () => {
   describe('tsquery - nth-child:', () => {
@@ -54,7 +54,13 @@ describe('tsquery:', () => {
         'JSDocParameterTag:first-child'
       );
 
-      expect(result.map((r) => r.comment)).toEqual(['- the x']);
+      expect(
+        result.map((r) =>
+          typeof r.comment === 'string'
+            ? r.comment
+            : r.comment?.map((part) => part.text).join('')
+        )
+      ).toEqual(['- the x']);
     });
 
     it('should handle SourceFiles', () => {

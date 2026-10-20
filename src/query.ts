@@ -1,6 +1,6 @@
-import type { Node, ScriptKind, Selector } from './index';
+import type { Node, ScriptKind, Selector } from './index.js';
 
-import { ast, match, parse } from './index';
+import { ast, match, parse } from './index.js';
 
 /**
  * @public

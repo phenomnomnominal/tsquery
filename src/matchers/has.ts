@@ -1,7 +1,7 @@
 import type { Has } from 'esquery';
-import type { Node } from 'typescript';
+import type { Node } from 'typescript/ast';
 
-import { findMatches, traverse } from '../traverse';
+import { findMatches, traverse } from '../traverse.js';
 
 export function has(node: Node, selector: Has): boolean {
   const collector: Array<Node> = [];

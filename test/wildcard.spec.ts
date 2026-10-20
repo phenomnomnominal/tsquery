@@ -4,9 +4,9 @@ import {
   simpleFunction,
   simpleProgram,
   statement
-} from './fixtures';
+} from './fixtures/index.js';
 
-import { tsquery } from '../src/index';
+import { tsquery, ast } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - wildcard:', () => {
@@ -25,7 +25,9 @@ describe('tsquery:', () => {
     it('should find all nodes (simple function)', () => {
       const result = tsquery(tsquery.ast(simpleFunction), '*');
 
-      expect(result.length).toEqual(46);
+      // Native JSDoc represents the two parameter comments as JSDocText nodes.
+      expect(result.length).toEqual(48);
+      expect(tsquery(ast(simpleFunction), 'JSDocText')).toHaveLength(2);
     });
 
     it('should find all nodes (simple program)', () => {

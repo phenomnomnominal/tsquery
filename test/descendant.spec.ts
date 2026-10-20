@@ -1,7 +1,7 @@
-import type { IfStatement } from 'typescript';
-import { conditional } from './fixtures';
+import type { IfStatement } from 'typescript/ast';
+import { conditional } from './fixtures/index.js';
 
-import { tsquery } from '../src/index';
+import { tsquery } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - descendant:', () => {

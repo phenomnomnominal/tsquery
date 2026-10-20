@@ -2,10 +2,10 @@ import type {
   ExpressionStatement,
   NoSubstitutionTemplateLiteral,
   TaggedTemplateExpression
-} from 'typescript';
+} from 'typescript/ast';
 
-import { tsquery } from '../src/index';
-import { getProperties } from '../src/traverse';
+import { tsquery } from '../src/index.js';
+import { getProperties } from '../src/traverse.js';
 
 describe('tsquery:', () => {
   describe('tsquery - types:', () => {

@@ -1,8 +1,8 @@
-import type { IfStatement } from 'typescript';
+import type { IfStatement } from 'typescript/ast';
 
-import { conditional } from './fixtures';
+import { conditional } from './fixtures/index.js';
 
-import { ast, query } from '../src/index';
+import { ast, query } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - compound:', () => {

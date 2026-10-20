@@ -1,4 +1,6 @@
-import type { Node, VisitResult } from './index';
+import type { Node } from './index.js';
+
+export type VisitResult<T extends Node | undefined> = T | readonly Node[];
 
 export type NodeTransformer = (node: Node) => VisitResult<Node | undefined>;
 export type StringTransformer = (node: Node) => string | null;

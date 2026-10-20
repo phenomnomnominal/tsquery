@@ -1,5 +1,5 @@
-import type { Node, Selector } from './index';
-import { query } from './index';
+import type { Node, Selector } from './index.js';
+import { query } from './index.js';
 
 /**
  * @public

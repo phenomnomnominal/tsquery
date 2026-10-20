@@ -1,84 +1,56 @@
-import type { ParseConfigHost, ParsedCommandLine } from 'typescript';
-import { SourceFile } from './index';
+import type { SourceFile } from './index.js';
 
-import * as fs from 'fs';
-import * as path from 'path';
-import {
-  createCompilerHost,
-  createProgram,
-  parseJsonConfigFileContent,
-  readConfigFile,
-  sys
-} from 'typescript';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { withAPI } from './native-api.js';
 
 /**
  * @public
- * Get all the `SourceFiles` included in a the TypeScript project described by a given config file.
+ * Get all the `SourceFiles` included in the TypeScript project described by a given config file, including resolved imports and default library files.
  *
  * @param configFilePath - the path to the TypeScript config file, or a directory containing a `tsconfig.json` file.
- * @returns an `Array` of the `SourceFiles` for all files in the project.
+ * @returns an `Array` of native `SourceFiles` for the project, or an empty array if the config file cannot be found. The returned syntax trees can be queried after the native program is disposed.
  */
 export function project(configFilePath: string): Array<SourceFile> {
   const fullPath = findConfig(configFilePath);
-  if (fullPath) {
-    return getSourceFiles(fullPath);
-  }
-  return [];
+  if (!fullPath) return [];
+  return withAPI((api) => {
+    const parsed = api.parseConfigFile(fullPath);
+    const program = api.createProgram(parsed.fileNames, parsed.options);
+    try {
+      return program.getSourceFileNames().flatMap((fileName) => {
+        const sourceFile = program.getSourceFile(fileName);
+        return sourceFile ? [sourceFile] : [];
+      });
+    } finally {
+      program.dispose();
+    }
+  });
 }
 
 /**
  * @public
- * Get all the file paths included ina the TypeScript project described by a given config file.
+ * Get the file paths selected by the `files` and `include` settings in a TypeScript project's config file. These are the program's root files; resolved imports and default library files are not added to this list.
  *
  * @param configFilePath - the path to the TypeScript config file, or a directory containing a `tsconfig.json` file.
- * @returns an `Array` of the file paths for all files in the project.
+ * @returns an `Array` of root file paths for the project, or an empty array if the config file cannot be found.
  */
 export function files(configFilePath: string): Array<string> {
   const fullPath = findConfig(configFilePath);
-  if (fullPath) {
-    return parseConfig(configFilePath).fileNames;
-  }
-  return [];
+  return fullPath
+    ? withAPI((api) => api.parseConfigFile(fullPath).fileNames)
+    : [];
 }
 
-function findConfig(configFilePath: string): string | null {
+function findConfig(configFilePath: string): string | undefined {
   try {
-    const fullPath = path.resolve(process.cwd(), configFilePath);
-    // Throws if file does not exist:
-    const stats = fs.statSync(fullPath);
-    if (!stats.isDirectory()) {
-      return fullPath;
-    }
-    const inDirectoryPath = path.join(fullPath, 'tsconfig.json');
-    // Throws if file does not exist:
-    fs.accessSync(inDirectoryPath);
-    return inDirectoryPath;
-  } catch (e) {
-    return null;
+    const fullPath = path.resolve(configFilePath);
+    const configPath = fs.statSync(fullPath).isDirectory()
+      ? path.join(fullPath, 'tsconfig.json')
+      : fullPath;
+    fs.accessSync(configPath);
+    return configPath;
+  } catch {
+    return undefined;
   }
-}
-
-function getSourceFiles(configFilePath: string): Array<SourceFile> {
-  const parsed = parseConfig(configFilePath);
-  const host = createCompilerHost(parsed.options, true);
-  const program = createProgram(parsed.fileNames, parsed.options, host);
-
-  return Array.from(program.getSourceFiles());
-}
-
-function parseConfig(configFilePath: string): ParsedCommandLine {
-  const config = readConfigFile(configFilePath, sys.readFile.bind(sys));
-
-  const parseConfigHost: ParseConfigHost = {
-    fileExists: sys.fileExists.bind(sys),
-    readDirectory: sys.readDirectory.bind(sys),
-    readFile: sys.readFile.bind(sys),
-    useCaseSensitiveFileNames: true
-  };
-  return parseJsonConfigFileContent(
-    config.config,
-    parseConfigHost,
-    path.dirname(configFilePath),
-    { noEmit: true }
-  );
 }

@@ -1,8 +1,8 @@
 import type { Class, Selector } from 'esquery';
-import type { Node } from 'typescript';
-import type { Properties } from '../types';
+import type { Node } from 'typescript/ast';
+import type { Properties } from '../types.js';
 
-import { getProperties } from '../traverse';
+import { getProperties } from '../traverse.js';
 
 type ClassMatcher = (
   node: Node,

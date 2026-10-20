@@ -1,19 +1,19 @@
 import type { Matches, Sequence, Selector } from 'esquery';
-import type { Node } from 'typescript';
+import type { Node } from 'typescript/ast';
 
-import { attribute } from './attribute';
-import { child } from './child';
-import { classMatcher } from './class';
-import { descendant } from './descendant';
-import { field } from './field';
-import { has } from './has';
-import { identifier } from './identifier';
-import { matches } from './matches';
-import { not } from './not';
-import { nthChild, nthLastChild } from './nth-child';
-import { adjacent, sibling } from './sibling';
-import { type } from './type';
-import { wildcard } from './wildcard';
+import { attribute } from './attribute.js';
+import { child } from './child.js';
+import { classMatcher } from './class.js';
+import { descendant } from './descendant.js';
+import { field } from './field.js';
+import { has } from './has.js';
+import { identifier } from './identifier.js';
+import { matches } from './matches.js';
+import { not } from './not.js';
+import { nthChild, nthLastChild } from './nth-child.js';
+import { adjacent, sibling } from './sibling.js';
+import { type } from './type.js';
+import { wildcard } from './wildcard.js';
 
 export type Matcher<Selector> = (
   node: Node,

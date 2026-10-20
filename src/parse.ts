@@ -3,10 +3,10 @@ import type {
   MultiSelector,
   BinarySelector,
   Identifier
-} from './index';
+} from './index.js';
 
-import * as esquery from 'esquery';
-import { SyntaxKind } from 'typescript';
+import esquery from 'esquery';
+import { SyntaxKind } from 'typescript/ast';
 
 const IDENTIFIER_QUERY = 'identifier';
 

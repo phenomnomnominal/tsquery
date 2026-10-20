@@ -1,7 +1,7 @@
-import type { StringTransformer } from './types';
+import type { StringTransformer } from './types.js';
 
-import { ast, query, ScriptKind } from './index';
-import { print } from './print';
+import { ast, query, ScriptKind } from './index.js';
+import { print } from './print.js';
 
 /**
  * @public

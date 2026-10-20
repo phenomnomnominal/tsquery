@@ -1,9 +1,9 @@
-import type { Identifier } from 'typescript';
+import type { Identifier } from 'typescript/ast';
 
-import { SyntaxKind } from 'typescript';
-import { conditional } from './fixtures';
+import { SyntaxKind } from 'typescript/ast';
+import { conditional } from './fixtures/index.js';
 
-import { tsquery, ast, query } from '../src/index';
+import { tsquery, ast, query } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - child:', () => {

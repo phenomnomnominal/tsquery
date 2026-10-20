@@ -1,8 +1,9 @@
-import { factory } from 'typescript';
+import * as factory from 'typescript/ast/factory';
+import { NodeFlags, SyntaxKind } from 'typescript/ast';
 
-import { ast, map } from '../src/index';
-import { print } from '../src/print';
-import { literal } from './fixtures';
+import { ast, map } from '../src/index.js';
+import { print } from '../src/print.js';
+import { literal } from './fixtures/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery.map:', () => {
@@ -68,7 +69,12 @@ console.log('bar');
             `.trim()
       );
       const result = map(tree, 'Identifier[name="console"]', () =>
-        factory.createPropertyAccessExpression(factory.createThis(), 'logger')
+        factory.createPropertyAccessExpression(
+          factory.createKeywordExpression(SyntaxKind.ThisKeyword),
+          undefined,
+          factory.createIdentifier('logger'),
+          NodeFlags.None
+        )
       );
       expect(print(result)).toEqual(
         `
@@ -150,5 +156,70 @@ console.log();
       });
       expect(count).toEqual(1);
     });
+  });
+});
+
+describe('native node-list transformations', () => {
+  it('expands replacements in an argument list', () => {
+    const source = ast('console.log(first, last);');
+    const result = map(source, 'Identifier[name="first"]', () => [
+      factory.createIdentifier('one'),
+      factory.createIdentifier('two')
+    ]);
+    expect(print(result)).toEqual('console.log(one, two, last);');
+    expect(print(source)).toEqual('console.log(first, last);');
+  });
+
+  it('expands statement lists and preserves surrounding comments', () => {
+    const source = ast('// before\nfirst();\nlast();');
+    const replacements = ast('one(); two();').statements;
+    const result = map(
+      source,
+      'ExpressionStatement:has(Identifier[name="first"])',
+      () => replacements
+    );
+    expect(print(result)).toContain('// before');
+    expect(print(result)).toContain('one();');
+    expect(print(result)).toContain('two();');
+    expect(print(result)).toContain('last();');
+    expect(result.statements).toHaveLength(3);
+  });
+
+  it('rejects multiple nodes in a scalar child position', () => {
+    expect(() =>
+      map(ast('const value = first;'), 'Identifier[name="first"]', () => [
+        factory.createIdentifier('one'),
+        factory.createIdentifier('two')
+      ])
+    ).toThrow('Multiple replacements require a node list.');
+  });
+});
+
+describe('native transformation text ranges', () => {
+  it.each(['first', 'console'])(
+    'preserves the leading comment when replacing %s',
+    (name) => {
+      const source = ast('// comment\nconsole.log(first);');
+      const replacement = factory.createIdentifier('changed');
+      const output = print(
+        map(source, `Identifier[name="${name}"]`, () => replacement)
+      );
+      expect(output).toEqual(
+        name === 'first'
+          ? '// comment\nconsole.log(changed);'
+          : '// comment\nchanged.log(first);'
+      );
+      expect(replacement.pos).toBe(-1);
+      expect(print(source)).toEqual('// comment\nconsole.log(first);');
+    }
+  );
+
+  it('does not duplicate comments when expanding synthesized arguments', () => {
+    const source = ast('// comment\nconsole.log(first);');
+    const result = map(source, 'Identifier[name="first"]', () => [
+      factory.createIdentifier('one'),
+      factory.createIdentifier('two')
+    ]);
+    expect(print(result)).toEqual('// comment\nconsole.log(one, two);');
   });
 });

@@ -1,10 +1,10 @@
-import type { Node, Selector } from './index';
-import type { Matcher } from './matchers';
-import type { Properties } from './types';
+import type { Node, Selector } from './index.js';
+import type { Matcher } from './matchers/index.js';
+import type { Properties } from './types.js';
 
-import { SyntaxKind } from 'typescript';
-import { syntaxKindName } from './syntax-kind';
-import { MATCHERS } from './matchers';
+import { SyntaxKind } from 'typescript/ast';
+import { syntaxKindName } from './syntax-kind.js';
+import { MATCHERS } from './matchers/index.js';
 
 const LITERAL_KINDS: Array<SyntaxKind> = [
   SyntaxKind.FalseKeyword,
@@ -50,7 +50,7 @@ export function traverse(
     ancestors.unshift(node.parent);
   }
   iterator(node, ancestors);
-  let children: Array<Node> = [];
+  let children: ReadonlyArray<Node> = [];
   try {
     // We need to use `getChildren()` to traverse JSDoc nodes
     children = node.getChildren();

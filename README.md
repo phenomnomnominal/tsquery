@@ -15,6 +15,23 @@ TSQuery is a port of the ESQuery API for TypeScript! TSQuery allows you to query
 npm install @phenomnomnominal/tsquery --save-dev
 ```
 
+## TypeScript 7.1 migration (draft)
+
+This branch explores a native-API release requiring TypeScript 7.1 beta or later
+within TypeScript 7, and Node.js 22.12 or later. Query functions remain synchronous.
+Nodes, enums, and factories now come from `typescript/ast` and its subpaths;
+legacy TypeScript nodes are not interchangeable with native nodes. Selectors
+accessing raw AST fields follow the native representation, including JSDoc.
+
+`print` accepts the native options `preserveSourceNewlines`, `neverAsciiEscape`,
+and `terminateUnterminatedLiterals`. Legacy options such as `removeComments` and
+`newLine` are rejected rather than silently ignored. Formatting follows the
+native printer.
+
+Run `npm run compile` and `npm test` for native type-checking and behavior tests.
+ESLint/typescript-eslint still need native API support, so lint and the lint step
+of `npm run build` remain blocked. This draft is not ready to merge or publish.
+
 ## Examples
 
 Say we want to select all instances of an identifier with name "Animal", e.g. the identifier in the `class` declaration, and the identifier in the `extends` declaration.
@@ -112,7 +129,7 @@ const hasIdentifier = includes('const x = 1;', 'Identifier');
 Transform AST `Nodes` within a given `Node` matching a `Selector`. Can be used to do `Node`-based replacement or removal of parts of the input AST.
 
 ```typescript
-import { factory } from 'typescript';
+import * as factory from 'typescript/ast/factory';
 import { map } from '@phenomnomnominal/tsquery';
 
 const tree = ast('const x = 1;')
@@ -146,7 +163,7 @@ Print a given `Node` or `SourceFile` to a string, using the default TypeScript p
 
 ```typescript
 import { print } from '@phenomnomnominal/tsquery';
-import { factory } from 'typescript';
+import * as factory from 'typescript/ast/factory';
 
   // create synthetic node:
 const node = factory.createArrowFunction(

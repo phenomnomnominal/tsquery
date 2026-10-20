@@ -4,11 +4,16 @@ import type {
   ExpressionStatement,
   IfStatement,
   VariableStatement
-} from 'typescript';
+} from 'typescript/ast';
 
-import { expression, literal, method, simpleProgram } from './fixtures';
+import {
+  expression,
+  literal,
+  method,
+  simpleProgram
+} from './fixtures/index.js';
 
-import { ast, query } from '../src/index';
+import { ast, query } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - class:', () => {

@@ -7,12 +7,12 @@ import type {
   JSDoc,
   JSDocParameterTag,
   Node
-} from 'typescript';
+} from 'typescript/ast';
 
-import { SyntaxKind } from 'typescript';
-import { conditional, simpleFunction } from './fixtures';
+import { SyntaxKind } from 'typescript/ast';
+import { conditional, simpleFunction } from './fixtures/index.js';
 
-import { tsquery } from '../src/index';
+import { tsquery } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - identifier:', () => {

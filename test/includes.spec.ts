@@ -1,6 +1,6 @@
-import { simpleFunction } from './fixtures';
+import { simpleFunction } from './fixtures/index.js';
 
-import { ast, includes, query } from '../src/index';
+import { ast, includes, query } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery.includes:', () => {

@@ -1,8 +1,9 @@
-import { SyntaxKind, factory } from 'typescript';
+import { SyntaxKind, TokenFlags } from 'typescript/ast';
+import * as factory from 'typescript/ast/factory';
 
-import { simpleFunction } from './fixtures/simple-function';
+import { simpleFunction } from './fixtures/simple-function.js';
 
-import { ast, print, query } from '../src/index';
+import { ast, print, query } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery.print:', () => {
@@ -24,15 +25,15 @@ function foo(x, y) {
       expect(
         print(
           factory.createArrowFunction(
-            [factory.createModifier(SyntaxKind.AsyncKeyword)],
+            [factory.createToken(SyntaxKind.AsyncKeyword)],
             undefined,
             [
               factory.createParameterDeclaration(
                 undefined,
                 undefined,
-                'x',
+                factory.createIdentifier('x'),
                 undefined,
-                factory.createTypeReferenceNode('number')
+                factory.createKeywordTypeNode(SyntaxKind.NumberKeyword)
               )
             ],
             undefined,
@@ -40,7 +41,7 @@ function foo(x, y) {
             factory.createBlock([])
           )
         )
-      ).toEqual('async (x: number) => { }');
+      ).toEqual('async (x: number) => {\n}');
     });
   });
 
@@ -49,5 +50,37 @@ function foo(x, y) {
     const [str] = query(tree, 'StringLiteral');
 
     expect(print(str)).toEqual('"hello world"');
+  });
+});
+
+describe('native printing', () => {
+  it('preserves parsed comments and string contents', () => {
+    const source = ast('// before\nexport const text = "hello"; // after');
+    const output = print(source);
+    expect(output).toContain('// before');
+    expect(output).toContain('// after');
+    expect(output).toContain('"hello"');
+    expect(output).not.toContain('\r');
+  });
+
+  it('does not change the positions of a parsed subtree', () => {
+    const source = ast('const value = "hello";');
+    const node = query(source, 'StringLiteral')[0];
+    const range = [node.pos, node.end];
+    expect(print(node)).toEqual('"hello"');
+    expect([node.pos, node.end]).toEqual(range);
+    expect(node.getText()).toEqual('"hello"');
+  });
+
+  it('forwards supported native printer options', () => {
+    const node = factory.createStringLiteral('é', TokenFlags.None);
+    expect(print(node, { neverAsciiEscape: true })).toEqual('"é"');
+  });
+
+  it('rejects legacy options instead of silently ignoring them', () => {
+    expect(() => {
+      // @ts-expect-error TypeScript 7's printer does not support removeComments.
+      print(ast('// comment\nconst value = 1;'), { removeComments: true });
+    }).toThrow('Unsupported native printer option: removeComments');
   });
 });

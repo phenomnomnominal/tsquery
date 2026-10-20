@@ -1,7 +1,7 @@
 import type { MultiSelector } from 'esquery';
-import type { Node } from 'typescript';
+import type { Node } from 'typescript/ast';
 
-import { findMatches } from '../traverse';
+import { findMatches } from '../traverse.js';
 
 export function matches<Selector extends MultiSelector>(
   modifier: 'some' | 'every'

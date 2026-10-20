@@ -1,62 +1,132 @@
-import type {
-  SourceFile,
-  TransformationContext,
-  Transformer,
-  TransformerFactory
-} from 'typescript';
-import type { Node, NodeTransformer, Selector, VisitResult } from './index';
+import type { Node, NodeArray, SourceFile } from 'typescript/ast';
+import type { NodeTransformer, Selector, VisitResult } from './index.js';
 
-import { transform, visitNode, visitEachChild } from 'typescript';
-import { ast, match, parse, print } from './index';
+import { cloneNode, createNodeArray } from 'typescript/ast/factory';
+import { isSourceFile } from 'typescript/ast/is';
+import { visitEachChild } from 'typescript/ast/visitor';
+import { ast, match, parse, print } from './index.js';
+import { withAPI } from './native-api.js';
 
 /**
  * @public
- * Transform AST `Nodes` within a given `Node` matching a `Selector`. Can be used to do `Node`-based replacement or removal of parts of the input AST.
+ * Transform AST `Nodes` within a `SourceFile` matching a `Selector`. Can be used to do `Node`-based replacement or removal of parts of the input AST.
  *
- * @param sourceFile - the TypeScript [`SourceFile`](https://github.com/microsoft/TypeScript/blob/main/src/services/types.ts#L159) to be searched.
+ * The transformed tree is printed and reparsed to restore parent pointers.
+ *
+ * @param sourceFile - the native TypeScript `SourceFile` to be searched.
  * @param selector - a TSQuery `Selector` (using the [ESQuery selector syntax](https://github.com/estools/esquery)).
- * @param nodeTransformer - a function to transform any matched `Nodes`. If the original `Node` is returned, there is no change. If a new `Node` is returned, the original `Node` is replaced. If `undefined` is returned, the original `Node` is removed.
- * @returns a transformed `Node`.
+ * @param nodeTransformer - a function to transform matched `Nodes`. Return the original `Node` to leave it unchanged, a new native `Node` to replace it, or `undefined` to remove it. An array of native `Nodes` replaces an element in a node list. Children of a replaced node are not visited.
+ * @returns the transformed and reparsed `SourceFile`.
  */
 export function map(
   sourceFile: SourceFile,
   selector: string | Selector,
   nodeTransformer: NodeTransformer
 ): SourceFile {
-  const matches = match(sourceFile, parse.ensure(selector));
-  return mapTransform(sourceFile, matches, nodeTransformer);
-}
-
-function mapTransform(
-  sourceFile: SourceFile,
-  matches: Array<Node>,
-  nodeTransformer: NodeTransformer
-): SourceFile {
-  const transformer = createTransformer((node: Node) => {
-    if (matches.includes(node)) {
-      return nodeTransformer(node);
+  return withAPI(() => {
+    const matches = new Set(match(sourceFile, parse.ensure(selector)));
+    const transformed = createTransformer((node) =>
+      matches.has(node) ? nodeTransformer(node) : node
+    )()(sourceFile);
+    if (!isSourceFile(transformed)) {
+      throw new TypeError('A SourceFile transformer must return a SourceFile.');
     }
-    return node;
+    return ast(print(transformed));
   });
-
-  const [transformed] = transform(sourceFile, [transformer]).transformed;
-  return ast(print(transformed));
 }
 
-export function createTransformer(
-  nodeTransformer: NodeTransformer
-): TransformerFactory<Node> {
-  return function (context: TransformationContext): Transformer<Node> {
-    return function (rootNode: Node): Node {
+/** Adapt native single-node visitors to TSQuery's list replacement callbacks. */
+export function createTransformer(nodeTransformer: NodeTransformer) {
+  return () =>
+    (rootNode: Node): Node => {
       function visit(node: Node): VisitResult<Node | undefined> {
         const replacement = nodeTransformer(node);
         if (replacement !== node) {
-          return replacement;
+          return isNodeList(replacement)
+            ? replacement.map((value) => prepareReplacement(value, node))
+            : replacement && prepareReplacement(replacement, node);
         }
-
-        return visitEachChild(node, visit, context);
+        let expansions: Map<Node, readonly Node[]> | undefined;
+        const visited = visitEachChild(node, (child) => {
+          const result = visit(child);
+          if (!isNodeList(result)) return result;
+          if (result.length <= 1) return result[0];
+          let isListMember = false;
+          node.forEachChild(
+            () => undefined,
+            (nodes) => {
+              if (nodes.includes(child)) isListMember = true;
+              return undefined;
+            }
+          );
+          if (!isListMember) {
+            throw new TypeError('Multiple replacements require a node list.');
+          }
+          (expansions ??= new Map()).set(child, result);
+          return child;
+        });
+        // Native update factories do not retain the original text ranges.
+        const updated = visited === node ? node : preserveRange(visited, node);
+        if (!expansions) return updated;
+        const replacements = expansions;
+        // The factory clone reads the public child fields. Substitute expanded lists
+        // there without mutating the native tree or depending on its private fields.
+        return cloneNode(
+          new Proxy(updated, {
+            get(target, key) {
+              const value: unknown = Reflect.get(target, key, target);
+              if (!Array.isArray(value)) return value;
+              const nodes = value as Node[];
+              if (!nodes.some((child) => replacements.has(child))) return value;
+              const original = value as unknown as NodeArray<Node>;
+              const list = createNodeArray(
+                nodes.flatMap((child) => replacements.get(child) ?? [child]),
+                original.pos,
+                original.end
+              );
+              list.hasTrailingComma = original.hasTrailingComma;
+              return list;
+            }
+          })
+        );
       }
-      return visitNode(rootNode, visit) || rootNode;
+      const result = visit(rootNode);
+      if (isNodeList(result)) {
+        if (result.length > 1)
+          throw new TypeError('Cannot replace the root with multiple nodes.');
+        return result[0] ?? rootNode;
+      }
+      return result ?? rootNode;
     };
-  };
+}
+
+function isNodeList(
+  value: VisitResult<Node | undefined>
+): value is readonly Node[] {
+  return Array.isArray(value);
+}
+
+function preserveRange<T extends Node>(node: T, original: Node): T {
+  return Object.assign(node, {
+    pos: original.pos,
+    end: original.end,
+    flags: original.flags
+  });
+}
+
+function prepareReplacement(node: Node, original: Node): Node {
+  const anchor = original.pos >= 0 ? original.getStart() : 0;
+  function prepare(value: Node): Node {
+    const visited = visitEachChild(value, prepare);
+    if (value.pos < 0) {
+      // The native encoder normalizes negative ranges to zero. Anchor new nodes
+      // to the replaced span to avoid picking up comments at file offset zero.
+      return Object.assign(cloneNode(visited), { pos: anchor, end: anchor });
+    }
+    return visited === value ? value : preserveRange(visited, value);
+  }
+  const prepared = prepare(node);
+  return node.pos < 0
+    ? Object.assign(prepared, { pos: original.pos, end: original.end })
+    : prepared;
 }

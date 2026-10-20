@@ -1,8 +1,8 @@
-import type { FunctionDeclaration } from 'typescript';
+import type { FunctionDeclaration } from 'typescript/ast';
 
-import { siblings, simpleProgram } from './fixtures';
+import { siblings, simpleProgram } from './fixtures/index.js';
 
-import { ast, query } from '../src/index';
+import { ast, query } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - sibling:', () => {

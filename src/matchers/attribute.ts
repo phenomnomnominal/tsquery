@@ -1,8 +1,8 @@
 import type { Attribute } from 'esquery';
-import type { Node } from 'typescript';
-import type { AttributeOperatorType } from '../types';
+import type { Node } from 'typescript/ast';
+import type { AttributeOperatorType } from '../types.js';
 
-import { getPath } from '../utils';
+import { getPath } from '../utils.js';
 
 const OPERATOR = {
   '=': equal,

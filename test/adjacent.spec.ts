@@ -1,6 +1,6 @@
-import { simpleProgram } from './fixtures';
+import { simpleProgram } from './fixtures/index.js';
 
-import { tsquery } from '../src/index';
+import { tsquery } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery - adjacent:', () => {

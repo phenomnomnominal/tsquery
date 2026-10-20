@@ -1,9 +1,9 @@
-import type { Selector } from '../src/index';
-import type { Block, FunctionDeclaration } from 'typescript';
+import type { Selector } from '../src/index.js';
+import type { Block, FunctionDeclaration } from 'typescript/ast';
 
-import { simpleFunction } from './fixtures';
+import { simpleFunction } from './fixtures/index.js';
 
-import { ast, parse, match, tsquery } from '../src/index';
+import { ast, parse, match, tsquery } from '../src/index.js';
 
 describe('tsquery:', () => {
   describe('tsquery.query:', () => {
@@ -30,17 +30,20 @@ describe('tsquery:', () => {
       const ast = tsquery.ast('function () {}');
 
       const [statement] = ast.statements;
-      const fakeNewNode = statement as unknown as { kind: number };
-      fakeNewNode.kind = 10000;
+      const fakeNewNode = new Proxy(statement, {
+        get(target, key) {
+          return key === 'kind' ? 10000 : Reflect.get(target, key, target);
+        }
+      });
 
       let throws = false;
       try {
-        tsquery(ast, 'Identifier');
-        tsquery(ast, ':declaration');
-        tsquery(ast, ':expression');
-        tsquery(ast, ':function');
-        tsquery(ast, ':pattern');
-        tsquery(ast, ':statement');
+        tsquery(fakeNewNode, 'Identifier');
+        tsquery(fakeNewNode, ':declaration');
+        tsquery(fakeNewNode, ':expression');
+        tsquery(fakeNewNode, ':function');
+        tsquery(fakeNewNode, ':pattern');
+        tsquery(fakeNewNode, ':statement');
       } catch {
         throws = true;
       }

@@ -1,7 +1,7 @@
 import type { Identifier } from 'esquery';
-import type { Node } from 'typescript';
+import type { Node } from 'typescript/ast';
 
-import { syntaxKindName } from '../syntax-kind';
+import { syntaxKindName } from '../syntax-kind.js';
 
 export function identifier(node: Node, selector: Identifier): boolean {
   const name = syntaxKindName(node.kind);

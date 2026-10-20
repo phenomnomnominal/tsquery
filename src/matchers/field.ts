@@ -1,7 +1,7 @@
 import type { Field } from 'esquery';
-import type { Node } from 'typescript';
+import type { Node } from 'typescript/ast';
 
-import { inPath } from '../utils';
+import { inPath } from '../utils.js';
 
 export function field(
   node: Node,
